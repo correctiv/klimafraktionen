@@ -1,6 +1,6 @@
 var BubbleChart = require('./bubblechart');
 
-var bChart = new BubbleChart('#chart', { path : 'data/climate-data.csv'});
+var bChart = new BubbleChart('#chart', { path : 'data/climate-data.csv', lang: 'en'});
 
 
 // test user interface 
