@@ -1,0 +1,51 @@
+@import 'normalize'
+@import 'helper'
+
+/* variables */
+$lightgrey = #999
+$linkColor = #555
+$grey = #777
+$black = #222
+
+html
+button
+input
+select
+textarea 
+  color: $black
+
+a
+a:visited
+  color: $linkColor
+  text-decoration: none
+
+a:hover
+  color: lighten($linkColor,10%)
+  
+body
+  color: $black
+  font-size: 1em
+  line-height: 1.4
+
+.chart-ui
+  font-size:12px
+  margin:25px 0 0 25px
+  
+  select 
+    background: white
+    margin-right:20px
+    min-width:100px
+    
+  div 
+    float:left
+
+svg
+  display: block
+  
+html
+body
+svg 
+  margin: 0px
+  padding: 0px
+  height: 100%
+  width: 100%
