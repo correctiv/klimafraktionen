@@ -7,7 +7,7 @@ var isProduction = environment === 'production';
 var webpackConfig = require('./webpack.config.js').getConfigByType(environment);
 
 var port = $.util.env.port || 1337;
-var app = 'app/';
+var app = 'src/';
 var dist = 'dist/';
 var autoprefixerBrowsers = [                 
   'ie >= 9',
@@ -29,13 +29,6 @@ gulp.task('scripts', function() {
     .pipe($.connect.reload());
 });
 
-// copy html from app to dist
-gulp.task('html', function() {
-  return gulp.src(app + 'index.html')
-    .pipe(gulp.dest(dist))
-    .pipe($.size({ title : 'html' }))
-    .pipe($.connect.reload());
-});
 
 gulp.task('styles',function(cb) {
 
@@ -64,13 +57,6 @@ gulp.task('serve', function() {
   });
 });
 
-// copy images
-gulp.task('images', function(cb) {
-  return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif}')
-    .pipe($.size({ title : 'images' }))
-    .pipe(gulp.dest(dist + 'images/'));
-});
-
 // copy data
 gulp.task('data', function(cb) {
   return gulp.src(app + 'data/**/*')
@@ -95,5 +81,5 @@ gulp.task('default', ['build', 'serve', 'watch']);
 
 // waits until clean is finished then builds the project
 gulp.task('build', ['clean'], function(){
-  gulp.start(['images','html','scripts','styles','data']);
+  gulp.start(['scripts', 'styles']);
 });

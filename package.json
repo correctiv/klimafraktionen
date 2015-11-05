@@ -2,7 +2,7 @@
   "name": "chart-wrapper",
   "version": "1.0.0",
   "description": "A wrapper for c3js.",
-  "main": "index.html",
+  "main": "src/index.js",
   "scripts": {
     "start": "gulp"
   },

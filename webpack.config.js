@@ -2,10 +2,10 @@ var webpack = require('webpack');
 var assign = require('lodash.assign');
 
 var configDefault = {
-  entry: './app/scripts/main.js',
+  entry: './src/scripts/bubblechart.js',
   output: {
     path: __dirname,
-    filename: 'main.js'
+    filename: 'bubblechart.js'
   },
   module: {
     preLoaders: [
