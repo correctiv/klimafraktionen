@@ -65,7 +65,13 @@
     yExtent = d3.extent(data, function(d,i) { return d[options.yAccessor] });
     rExtent = d3.extent(data, function(d,i) { return d[options.sizeAccessor] });
 
-    x = d3.scale.log().domain(xExtent).range([0, width]);
+    if(options.isLogScale) {
+      x = d3.scale.log().domain(xExtent).range([0, width]);
+    }
+    else {
+      x = d3.scale.linear().domain(xExtent).range([0, width]);
+    }
+    
     y = d3.scale.linear().domain(yExtent).range([height, 0]);
     r = d3.scale.sqrt().domain(rExtent).range([3,25]);
     color = d3.scale.ordinal().range(options.colors);
@@ -240,6 +246,7 @@
             C : '#009300',
             D : '#ea8500'
           },
+          isLogScale : true,
           pointRange: [10, 1000],
           xTicks: 5,
           yTicks: 5,
@@ -271,7 +278,12 @@
         bindEvents();
       });
 
-      return this;
+      return {
+        init : this,
+        update : function(newOpts) {
+          console.log(newOpts);
+        }
+      }
   }
 
 }));
