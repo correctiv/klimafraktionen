@@ -24,7 +24,7 @@
           sizeAccessor: 'population_2014',
           xAxisLabel: 'gdp 2014',
           yAxisLabel: 'unemployment 2013',
-          colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'],
+          colors: ['#005fcc', '#5c0000', '#009300', '#ea8500'],
           pointRange: [10, 1000],
           xTicks: 5,
           yTicks: 5,
@@ -56,7 +56,7 @@
   }
 
   var svg, x, y, r, color, xAxis, yAxis, xExtent, yExtent, bubbleGroup;
-  
+
   var width = 960,
       height = 500;
 
