@@ -70,7 +70,11 @@
     r = d3.scale.sqrt().domain(rExtent).range([3,25]);
     color = d3.scale.ordinal().range(options.colors);
 
-    xAxis = d3.svg.axis().orient('bottom').scale(x);
+    xAxis = d3.svg.axis()
+      .orient('bottom')
+      .scale(x)
+      .ticks(2, d3.format(",d"));
+
     yAxis = d3.svg.axis().orient('left').scale(y);
 
     svg.call(createAxis);
@@ -85,6 +89,18 @@
       .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
       .attr('fill', function(d,i) { return options.colors[d['fraction']] })
       .attr('stroke', function(d,i) { return options.colors[d['fraction']] })
+
+    svg.selectAll('text.label')
+      .data(data.filter(function(d) {
+        return d.labeled != '';
+      }))
+      .enter()
+      .append('text')
+      .classed('label', true)
+      .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) })
+      .attr('y', function(d,i) { return y(d[options.yAccessor]) })
+      .attr('text-anchor','end')
+      .text(function(d) { return d.countryname_en; });
 
     svg.call(createVoronoi(data, options));
   }
@@ -111,6 +127,7 @@
             });
         });
     }
+
   }
 
   function createAxis(d) {
