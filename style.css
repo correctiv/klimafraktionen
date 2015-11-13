@@ -21,3 +21,7 @@
 .climate-chart path.voro {
   fill : transparent;
 }
+
+.climate-chart text.label {
+  font: 10px sans-serif;
+}

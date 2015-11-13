@@ -19,9 +19,9 @@
       yExtent, 
       bubbleGroup, 
       parent, 
-      globalData, 
-      globalOpts, 
-      globalSelector, 
+      data, 
+      options, 
+      selector, 
       bubbles;
 
   var width = 960,
@@ -37,7 +37,7 @@
 
   function bindEvents() {
     d3.select(window).on('resize', function() {
-      renderChart(globalSelector, globalOpts, globalData);
+      renderChart(selector, options, data);
     });
   }
 
@@ -46,12 +46,10 @@
     width = width - margin.right - margin.left;
   }
 
-  function renderChart(selector, options, data) {
+  function renderChart() {
     updateDimensions(window.innerWidth);
     parent = d3.select(selector);
     parent.node().innerHTML = '';
-    console.log(width);
-    console.log(options);
 
     svg = parent
       .append('svg')
@@ -61,6 +59,16 @@
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    initScales();
+    initAxis();
+
+    svg.call(createAxis);
+    svg.call(createBubbles);
+    svg.call(createLabels);
+    svg.call(createVoronoi);
+  }
+
+  function initScales() {
     xExtent = d3.extent(data, function(d,i) { return d[options.xAccessor] });
     yExtent = d3.extent(data, function(d,i) { return d[options.yAccessor] });
     rExtent = d3.extent(data, function(d,i) { return d[options.sizeAccessor] });
@@ -75,16 +83,18 @@
     y = d3.scale.linear().domain(yExtent).range([height, 0]);
     r = d3.scale.sqrt().domain(rExtent).range([3,25]);
     color = d3.scale.ordinal().range(options.colors);
+  }
 
+  function initAxis() {
     xAxis = d3.svg.axis()
       .orient('bottom')
       .scale(x)
       .ticks(2, d3.format(",d"));
 
     yAxis = d3.svg.axis().orient('left').scale(y);
+  }
 
-    svg.call(createAxis);
-
+  function createBubbles() {
     bubbles = svg.selectAll('circle.bubble')
       .data(data)
       .enter()
@@ -95,7 +105,9 @@
       .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
       .attr('fill', function(d,i) { return options.colors[d['fraction']] })
       .attr('stroke', function(d,i) { return options.colors[d['fraction']] })
+  }
 
+  function createLabels() {
     svg.selectAll('text.label')
       .data(data.filter(function(d) {
         return d.labeled != '';
@@ -107,36 +119,59 @@
       .attr('y', function(d,i) { return y(d[options.yAccessor]) })
       .attr('text-anchor','end')
       .text(function(d) { return d.countryname_en; });
-
-    svg.call(createVoronoi(data, options));
   }
 
-  function createVoronoi(data, options) {
+  function createVoronoi() {
     var voro = d3.geom.voronoi()
       .x(function(d,i) { return x(d[options.xAccessor]) })
       .y(function(d,i) { return y(d[options.yAccessor]) })
-    
-    return function() {
-      this.selectAll('path.voro')
-        .data(voro(data))
-        .enter()
-        .append('path')
-        .classed('voro', true)
-        .attr('d', function(d) { return 'M' + d.join(',') + 'Z'; })
-        .on('mouseenter', onMouseEnter)
-        .on('mouseleave', onMouseLeave)
-        .each(function(d) { 
-          d3.select(this)
-            .datum()
-            .node = bubbles.filter(function(b,i) {
-              return b.countryname_en == d.point.countryname_en;
-            });
-        });
-    }
+
+    this.select('.voronoi-overlay').remove();
+
+    this.append('g')
+      .classed('voronoi-overlay', true)
+      .selectAll('path.voro')
+      .data(voro(data))
+      .enter()
+      .append('path')
+      .classed('voro', true)
+      .attr('d', function(d) { return 'M' + d.join(',') + 'Z'; })
+      .on('mouseenter', onMouseEnter)
+      .on('mouseleave', onMouseLeave)
+      .each(function(d) { 
+        d3.select(this)
+          .datum()
+          .node = bubbles.filter(function(b,i) {
+            return b.countryname_en == d.point.countryname_en;
+          });
+      });
 
   }
 
+  function updateChart() {
+    initScales();
+
+    d3.selectAll('circle.bubble')
+      .transition()
+      .duration(500)
+      .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
+      .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
+      .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
+
+    d3.selectAll('text.label')
+      .transition()
+      .duration(500)
+      .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2 })
+      .attr('y', function(d,i) { return y(d[options.yAccessor]) })
+
+    svg.call(createVoronoi);
+  }
+
+
   function createAxis(d) {
+
+    d3.selectAll('.climate-chart .y.axis, .climate-chart .x.axis').remove();
+
     this.append('g')
       .classed('y axis', true)
       .call(yAxis);
@@ -224,9 +259,9 @@
       return obj;
   }
 
-  return function(selector, _options) {
+  return function(_selector, _options) {
 
-      if (typeof selector === 'undefined') {
+      if (typeof _selector === 'undefined') {
           throw new Error('You need to specify a selector.');
       }
 
@@ -265,24 +300,26 @@
 
       _options = _merge(_options, optionsDefault);
 
-      d3.csv(_options.path, function(err, data) {
+      d3.csv(_options.path, function(err, csvData) {
         if(err) {
           throw new Error('Data not found.');
           return false;
         }
-        data = _parseData(data, _options);
-        globalData = data;
-        globalOpts = _options;
-        globalSelector = selector;
-        renderChart(selector, _options, data);
+        data = _parseData(csvData, _options);
+        options = _options;
+        selector = _selector;
+        renderChart();
         bindEvents();
       });
 
+      function update(newOpts) {
+        options = _merge(options,newOpts);
+        console.log(options);
+        updateChart();
+      }
+
       return {
-        init : this,
-        update : function(newOpts) {
-          console.log(newOpts);
-        }
+        update : update
       }
   }
 

@@ -9,9 +9,17 @@
 </head>
 <body>
   <div id="chart"></div>
+
+    <div id="chart2"></div>
   
   <script>
   var Chart = new ClimateChart('#chart', { path: 'data/climate-data.csv' });
+  window.setTimeout(function() {
+    Chart.update({ yAccessor : 'population_2014' })
+  }, 2000);
+
+  var ChartX = new ClimateChart('#chart2', { path: 'data/climate-data.csv' });
+
   </script>
 </body>
 </html>
