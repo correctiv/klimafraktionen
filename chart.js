@@ -25,10 +25,10 @@
           xAxisLabel: 'gdp 2014',
           yAxisLabel: 'unemployment 2013',
           colors: {
-            A : '#1f77b4',
-            B : '#ff7f0e',
-            C : '#2ca02c',
-            D : '#d62728'
+            A : '#005fcc',
+            B : '#5c0000',
+            C : '#009300',
+            D : '#ea8500'
           },
           pointRange: [10, 1000],
           xTicks: 5,
@@ -61,7 +61,7 @@
   }
 
   var svg, x, y, r, color, xAxis, yAxis, xExtent, yExtent, bubbleGroup;
-  
+
   var width = 960,
       height = 500;
 
