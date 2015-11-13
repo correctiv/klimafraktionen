@@ -8,7 +8,21 @@
   }
 }(this, function(d3) {
 
-  var svg, x, y, r, color, xAxis, yAxis, xExtent, yExtent, bubbleGroup, parent, globalData, globalOpts, globalSelector;
+  var svg, 
+      x, 
+      y, 
+      r, 
+      color, 
+      xAxis, 
+      yAxis, 
+      xExtent, 
+      yExtent, 
+      bubbleGroup, 
+      parent, 
+      globalData, 
+      globalOpts, 
+      globalSelector, 
+      bubbles;
 
   var width = 960,
       height = 500,
@@ -61,7 +75,7 @@
 
     svg.call(createAxis);
 
-    svg.selectAll('circle.bubble')
+    bubbles = svg.selectAll('circle.bubble')
       .data(data)
       .enter()
       .append('circle')
@@ -71,7 +85,32 @@
       .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
       .attr('fill', function(d,i) { return options.colors[d['fraction']] })
       .attr('stroke', function(d,i) { return options.colors[d['fraction']] })
-      .on('mouseenter', function(d) { console.log(d); });
+
+    svg.call(createVoronoi(data, options));
+  }
+
+  function createVoronoi(data, options) {
+    var voro = d3.geom.voronoi()
+      .x(function(d,i) { return x(d[options.xAccessor]) })
+      .y(function(d,i) { return y(d[options.yAccessor]) })
+    
+    return function() {
+      this.selectAll('path.voro')
+        .data(voro(data))
+        .enter()
+        .append('path')
+        .classed('voro', true)
+        .attr('d', function(d) { return 'M' + d.join(',') + 'Z'; })
+        .on('mouseenter', onMouseEnter)
+        .on('mouseleave', onMouseLeave)
+        .each(function(d) { 
+          d3.select(this)
+            .datum()
+            .node = bubbles.filter(function(b,i) {
+              return b.countryname_en == d.point.countryname_en;
+            });
+        });
+    }
   }
 
   function createAxis(d) {
@@ -83,6 +122,14 @@
       .classed('x axis', true)
       .attr('transform', 'translate(0,' + height + ')')
       .call(xAxis);
+  }
+
+  function onMouseEnter(d,i) {
+    d.node.classed('active', true);
+  }
+
+  function onMouseLeave(d,i) {
+    d.node.classed('active', false);
   }
 
   ///////////////////////

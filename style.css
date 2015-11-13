@@ -13,3 +13,11 @@
   stroke-width: 1;
   stroke-opacity: 1;
 }
+
+.climate-chart .bubble.active {
+  fill-opacity: 1;
+}
+
+.climate-chart path.voro {
+  fill : transparent;
+}
