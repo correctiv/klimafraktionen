@@ -76,6 +76,18 @@
       .attr('fill', function(d,i) { return options.colors[d['fraction']] })
       .attr('stroke', function(d,i) { return options.colors[d['fraction']] })
       .on('mouseenter', function(d) { console.log(d); });
+
+    svg.selectAll('text.label')
+      .data(data.filter(function(d) {
+        return d.labeled != '';
+      }))
+      .enter()
+      .append('text')
+      .classed('label', true)
+      .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) })
+      .attr('y', function(d,i) { return y(d[options.yAccessor]) })
+      .attr('text-anchor','end')
+      .text(function(d) { return d.countryname_en; });
   }
 
   function createAxis(d) {
