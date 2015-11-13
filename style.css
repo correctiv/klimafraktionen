@@ -1,0 +1,15 @@
+.climate-chart .axis path, .climate-chart .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.climate-chart .axis text {
+  font: 10px sans-serif;
+}
+
+.climate-chart .bubble {
+  fill-opacity: .5;
+  stroke-width: 1;
+  stroke-opacity: 1;
+}

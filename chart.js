@@ -24,7 +24,12 @@
           sizeAccessor: 'population_2014',
           xAxisLabel: 'gdp 2014',
           yAxisLabel: 'unemployment 2013',
-          colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'],
+          colors: {
+            A : '#1f77b4',
+            B : '#ff7f0e',
+            C : '#2ca02c',
+            D : '#d62728'
+          },
           pointRange: [10, 1000],
           xTicks: 5,
           yTicks: 5,
@@ -69,8 +74,11 @@
 
   function renderChart(selector, options, data) {
 
+    console.log(options);
+
     svg = d3.select(selector)
       .append('svg')
+      .classed('climate-chart', true)
       .attr('width', width + margin.right + margin.left)
       .attr('height', height + margin.top + margin.bottom)
       .append("g")
@@ -80,18 +88,15 @@
     yExtent = d3.extent(data, function(d,i) { return d[options.yAccessor] });
     rExtent = d3.extent(data, function(d,i) { return d[options.sizeAccessor] });
 
+    x = d3.scale.log().domain(xExtent).range([0, width]);
+    y = d3.scale.linear().domain(yExtent).range([height, 0]);
+    r = d3.scale.sqrt().domain(rExtent).range([3,25]);
+    color = d3.scale.ordinal().range(options.colors);
+
     xAxis = d3.svg.axis().orient('bottom').scale(x);
     yAxis = d3.svg.axis().orient('left').scale(y);
 
-    x = d3.scale.linear().domain(xExtent).range([margin.left, width - margin.right]);
-    y = d3.scale.linear().domain(yExtent).range([height - margin.bottom, margin.top]);
-    r = d3.scale.sqrt().domain(rExtent).range([3,10]);
-    color = d3.scale.ordinal().range(options.colors);
-
-    // bubbleGroup = svg.append('g')
-    //   .classed('bubble-group', true)
-    //   .attr('width', width + margin.right + margin.left)
-    //   .attr('height', height + margin.top + margin.bottom);
+    svg.call(createAxis);
 
     svg.selectAll('circle.bubble')
       .data(data)
@@ -101,16 +106,20 @@
       .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
       .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
       .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
-      .attr('fill', function(d,i) { return color(d['fraction'] )});
-
-    svg.call(createAxis);
+      .attr('fill', function(d,i) { return options.colors[d['fraction']] })
+      .attr('stroke', function(d,i) { return options.colors[d['fraction']] })
+      .on('mouseenter', function(d) { console.log(d); });
   }
 
   function createAxis(d) {
-    console.log(this);
     this.append('g')
       .classed('y axis', true)
       .call(yAxis);
+
+    this.append('g')
+      .classed('x axis', true)
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(xAxis);
   }
 
   ///////////////////////
