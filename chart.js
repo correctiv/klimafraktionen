@@ -56,7 +56,11 @@
     r = d3.scale.sqrt().domain(rExtent).range([3,25]);
     color = d3.scale.ordinal().range(options.colors);
 
-    xAxis = d3.svg.axis().orient('bottom').scale(x);
+    xAxis = d3.svg.axis()
+      .orient('bottom')
+      .scale(x)
+      .ticks(2, d3.format(",d"));
+
     yAxis = d3.svg.axis().orient('left').scale(y);
 
     svg.call(createAxis);
