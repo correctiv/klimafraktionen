@@ -8,62 +8,11 @@
   }
 }(this, function(d3) {
 
-  function Chart(selector, _options) {
-
-      if (typeof selector === 'undefined') {
-          throw new Error('You need to specify a selector.');
-      }
-
-      if (typeof _options === 'undefined' || !_options.path) {
-          throw new Error('You need to specify options: path');
-      }
-
-      var optionsDefault = {
-          xAccessor: 'gdp_2014',
-          yAccessor: 'co2_t_pc_2012',
-          sizeAccessor: 'population_2014',
-          xAxisLabel: 'gdp 2014',
-          yAxisLabel: 'unemployment 2013',
-          colors: {
-            A : '#005fcc',
-            B : '#5c0000',
-            C : '#009300',
-            D : '#ea8500'
-          },
-          pointRange: [10, 1000],
-          xTicks: 5,
-          yTicks: 5,
-          height: 400,
-          lang: 'de',
-          interactive: true,
-          showLegend: false,
-          margin: {
-              top: 40,
-              right: 50,
-              bottom: 40,
-              left: 75
-          },
-          filter: null
-      };
-
-      _options = _merge(_options, optionsDefault);
-
-      d3.csv(_options.path, function(err, data) {
-        if(err) {
-          throw new Error('Data not found.');
-          return false;
-        }
-        data = _parseData(data, _options);
-        renderChart(selector, _options, data);
-      });
-
-      return this;
-  }
-
-  var svg, x, y, r, color, xAxis, yAxis, xExtent, yExtent, bubbleGroup;
+  var svg, x, y, r, color, xAxis, yAxis, xExtent, yExtent, bubbleGroup, parent, globalData, globalOpts, globalSelector;
 
   var width = 960,
-      height = 500;
+      height = 500,
+      maxWidth = 960;
 
   var margin = {
     top: 50,
@@ -72,11 +21,25 @@
     left : 50
   }
 
-  function renderChart(selector, options, data) {
+  function bindEvents() {
+    d3.select(window).on('resize', function() {
+      renderChart(globalSelector, globalOpts, globalData);
+    });
+  }
 
+  function updateDimensions(winWidth) {
+    width = winWidth < maxWidth ? winWidth : maxWidth;
+    width = width - margin.right - margin.left;
+  }
+
+  function renderChart(selector, options, data) {
+    updateDimensions(window.innerWidth);
+    parent = d3.select(selector);
+    parent.node().innerHTML = '';
+    console.log(width);
     console.log(options);
 
-    svg = d3.select(selector)
+    svg = parent
       .append('svg')
       .classed('climate-chart', true)
       .attr('width', width + margin.right + margin.left)
@@ -191,6 +154,60 @@
       return obj;
   }
 
-  return Chart;
+  return function(selector, _options) {
+
+      if (typeof selector === 'undefined') {
+          throw new Error('You need to specify a selector.');
+      }
+
+      if (typeof _options === 'undefined' || !_options.path) {
+          throw new Error('You need to specify options: path');
+      }
+
+      var optionsDefault = {
+          xAccessor: 'gdp_2014',
+          yAccessor: 'co2_t_pc_2012',
+          sizeAccessor: 'population_2014',
+          xAxisLabel: 'gdp 2014',
+          yAxisLabel: 'unemployment 2013',
+          colors: {
+            A : '#005fcc',
+            B : '#5c0000',
+            C : '#009300',
+            D : '#ea8500'
+          },
+          pointRange: [10, 1000],
+          xTicks: 5,
+          yTicks: 5,
+          height: 400,
+          lang: 'de',
+          interactive: true,
+          showLegend: false,
+          margin: {
+              top: 40,
+              right: 50,
+              bottom: 40,
+              left: 75
+          },
+          filter: null
+      };
+
+      _options = _merge(_options, optionsDefault);
+
+      d3.csv(_options.path, function(err, data) {
+        if(err) {
+          throw new Error('Data not found.');
+          return false;
+        }
+        data = _parseData(data, _options);
+        globalData = data;
+        globalOpts = _options;
+        globalSelector = selector;
+        renderChart(selector, _options, data);
+        bindEvents();
+      });
+
+      return this;
+  }
 
 }));
