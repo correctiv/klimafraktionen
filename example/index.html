@@ -1,77 +1,16 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="A description.">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
- 
+  <meta charset="UTF-8">
   <title>Klimafraktionen</title>
-  
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="../chart.js"></script>
 </head>
 <body>
+  <div id="chart"></div>
   
-<div id="chart"></div>
-
-
-
-<!-- only for testing -->
-<div class="chart-ui clearfix">
-  <div>
-    X-Achse<select></select>
-  </div>
-  <div>
-    Y-Achse<select></select>
-  </div>
-  <div>
-    Radius<select></select>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.js"></script>
-<script src="../index.js"></script>
-
-<script>
-  
-  var bChart = new ClimateFactions('#chart', { 
-    path : 'data/climate-data.csv', 
-    colors: {A : '#1f77b4', B: '#ff7f0e', C: '#2ca02c', D: '#d62728'},
-    xAccessor: 'gdp_2014',
-    yAccessor: 'unemployment_2013',
-    sizeAccessor: 'population_2014',
-    lang: 'en',
-    interactive: true,
-    filter: function(d, i){
-      return d.gdp_2014 < 5000000000000;
-    }
-  });
-
-  // only for testing: user interface 
-  var selects = document.querySelectorAll('.chart-ui select');
-
-  var tableHeaders = ['population_2000','population_2014','population_2020','population_2030','population_2050','average_monthly_disposable_salary_2014','unemployment_2013','gdp_pc_ppp_2012','gdp_pc_ppp_2014','gdp_2012','gdp_2014','gdp_growth_2014','co2_kt_2012','co2_t_pc_2012','total_primary_energy_production_2012','total_primary_energy_production_2008','total_recoverable_coal_2011'];
-  tableHeaders.forEach(function(th){
-    [].forEach.call(selects, function(s){
-      s.appendChild(new Option(th, th));
-    });
-  });
-
-  [].forEach.call(selects, function(s){
-      s.addEventListener('change', updateChart);
-  });
-
-  function updateChart(evt){
-    var chartOptions = {
-      xAccessor: selects[0][selects[0].selectedIndex].value,
-      yAccessor: selects[1][selects[1].selectedIndex].value,
-      sizeAccessor:selects[2][selects[2].selectedIndex].value
-    };
-
-    bChart.update(chartOptions)
-  }
-
-</script>
+  <script>
+  var Chart = new ClimateChart('#chart', { path: 'data/climate-data.csv' });
+  </script>
 </body>
 </html>
