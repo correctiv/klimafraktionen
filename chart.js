@@ -56,7 +56,6 @@
     }
 
     function update(data) {
-      console.log(data);
       ttHead.text(data.countryname_en);
       ttBody.text(data.co2_t_pc_2012);
     }
@@ -350,8 +349,6 @@
     }
 
     function onMouseMove(d,i) {
-      console.log(tooltip);
-      console.log(parent);
       tooltip.updatePosition(d3.mouse(parent.node()));
     }
 
