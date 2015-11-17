@@ -125,12 +125,17 @@
         interactive: true,
         showLegend: false,
         margin: {
-            top: 40,
-            right: 50,
-            bottom: 40,
-            left: 75
+          top: 50,
+          right: 50,
+          bottom: 50,
+          left: 50
         },
-        filter: null
+        filter: null,
+        minRadius: 4,
+        maxRadius: 15,
+        maxWidth: 960,
+        aspectRatio: .7,
+        transitionDuration: 500
     };
 
     _options = _merge(_options, optionsDefault);
@@ -160,20 +165,14 @@
         data,
         options,
         selector,
-        bubbles;
-
-    var width = 960,
-        height = 500,
-        maxWidth = 960,
-        transitionDuration = 500,
+        bubbles,
+        transitionDuration,
+        margin,
+        width,
+        height,
+        maxWidth,
+        aspectRatio,
         tooltip = new Tooltip();
-
-    var margin = {
-      top: 50,
-      right: 50,
-      bottom: 50,
-      left: 50
-    };
 
     function bindEvents() {
       window.addEventListener('resize', function() {
@@ -182,11 +181,14 @@
     }
 
     function updateDimensions(winWidth) {
-      width = winWidth < maxWidth ? winWidth : maxWidth;
+      width = winWidth < options.maxWidth ? winWidth : options.maxWidth;
       width = width - margin.right - margin.left;
+      height = width * options.aspectRatio;
     }
 
     function renderChart() {
+      margin = options.margin;
+            
       updateDimensions(window.innerWidth);
       parent = d3.select(selector);
       parent.node().innerHTML = '';
@@ -210,8 +212,9 @@
 
       svg.call(createAxis);
       svg.call(createBubbles);
-      svg.call(createLabels);
       svg.call(createVoronoi);
+
+      parent.call(createLabels);
     }
 
     function initScales() {
@@ -226,8 +229,8 @@
         x = d3.scale.linear().domain(xExtent).range([0, width]);
       }
 
-      y = d3.scale.linear().domain(yExtent).range([height, 0]);
-      r = d3.scale.sqrt().domain(rExtent).range([3,25]);
+      y = d3.scale.linear().domain([-.5, yExtent[1]]).range([height, 0]);
+      r = d3.scale.sqrt().domain(rExtent).range([options.minRadius,options.maxRadius]);
       color = d3.scale.ordinal().range(options.colors);
     }
 
@@ -254,17 +257,32 @@
     }
 
     function createLabels() {
-      svg.selectAll('text.label')
+
+      this.selectAll('div.label')
         .data(data.filter(function(d) {
           return d.labeled != '';
         }))
         .enter()
-        .append('text')
+        .append('div')
         .classed('label', true)
-        .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) })
-        .attr('y', function(d,i) { return y(d[options.yAccessor]) })
-        .attr('text-anchor','end')
+        .classed('left', function(d,i) { return x(d[options.xAccessor]) > (options.maxWidth / 2) })
+        .style('left', labelPositionLeft)
+        .style('top', labelPositionTop)
+        .style('display', 'block')
         .text(function(d) { return d.countryname_en; });
+    }
+    
+    function labelPositionLeft(d,i) {
+      var pos_x = x(d[options.xAccessor]);
+      var factor = pos_x > options.maxWidth / 2 ? -1 : 1;
+      pos_x += (r(d[options.sizeAccessor])+5) * factor;
+      pos_x += margin.left;
+      pos_x += 'px';
+      return pos_x;
+    }
+
+    function labelPositionTop(d,i) {
+      return (y(d[options.yAccessor]) - 6 + margin.top) + 'px';
     }
 
     function createVoronoi() {
@@ -298,12 +316,11 @@
 
 
     function createAxis(d) {
-      xAxis.scale(x);
 
       if(svg.selectAll('.climate-chart .x.axis')[0].length > 0) {
         this.selectAll('.x.axis')
           .transition()
-          .duration(transitionDuration)
+          .duration(options.transitionDuration)
           .call(xAxis);
 
         return;
@@ -328,14 +345,14 @@
 
       svg.selectAll('circle.bubble')
         .transition()
-        .duration(transitionDuration)
+        .duration(options.transitionDuration)
         .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
         .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
         .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
 
       svg.selectAll('text.label')
         .transition()
-        .duration(transitionDuration)
+        .duration(options.transitionDuration)
         .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2 })
         .attr('y', function(d,i) { return y(d[options.yAccessor]) })
 
@@ -375,7 +392,7 @@
       //animate x-axis to new extent
       svg.selectAll('.x.axis')
         .transition()
-        .duration(transitionDuration)
+        .duration(options.transitionDuration)
         .call(xAxis);
 
       //highlight all circles in group
@@ -386,15 +403,31 @@
         .style('opacity', 1)
         .each(function(d,i) { d.disabled = false });
 
+      parent.selectAll('div.label')
+        .style('display', 'none')
+        .filter(function(d) { return d.fraction == groupId })
+        .transition()
+        .duration(options.transitionDuration)
+        .style('left', labelPositionLeft)
+        .style('display', 'block');
+
       updateChart(true);
       svg.call(createVoronoi);
     }
 
     function reset() {
       updateChart();
+      xAxis.scale(x);
       
       svg.call(createAxis);
       svg.call(createVoronoi);
+
+      parent.selectAll('div.label')
+        .style('display', 'block')
+        .transition()
+        .duration(options.transitionDuration)
+        .style('left', labelPositionLeft)
+
 
       svg.selectAll('circle.bubble')
         .style('opacity', 1)

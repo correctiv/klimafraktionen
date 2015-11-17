@@ -22,7 +22,13 @@ var bChart = new BubbleChart('#chart', {
   lang: 'en',
   filter : function(d, i){ // null = no filter
     return d.gdp_2014 < 5000000000000;
-  }
+  },
+  isLogScale: true, //sets x-axis to logarithmic scale
+  minRadius: 5, //configure the size of the bubbles
+  maxRadius: 15,
+  transitionDuration: 500, //all transitions on update get this duration
+  maxWidth: 960, //the maximum width of the chart
+  aspectRatio: .7 //the factor that is used to compute the height of the chart
 });
 ```
 

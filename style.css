@@ -48,7 +48,15 @@
   fill : transparent;
 }
 
-.climate-chart text.label {
+.climate-chart-wrapper div.label {
   font: 10px sans-serif;
   pointer-events: none;
+  position: absolute;
+}
+
+.climate-chart-wrapper div.label.left {
+  -webkit-transform: translateX(-100%);
+  -moz-transform: translateX(-100%);
+  -o-transform: translateX(-100%);
+  transform: translateX(-100%);
 }
