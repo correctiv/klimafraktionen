@@ -1,3 +1,29 @@
+.climate-chart-wrapper {
+  position: relative;
+}
+
+.climate-chart-wrapper .tooltip {
+  font-family: sans-serif;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 180px;
+  height: 100px;
+  background: rgba(255,255,255,.8);
+  border: 1px solid #ddd;
+  z-index: 1000;
+  padding: 20px;
+  pointer-events: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.climate-chart-wrapper .tooltip .tool-head {
+  font-weight: bold;
+}
+
 .climate-chart .axis path, .climate-chart .axis line {
   fill: none;
   stroke: #000;
@@ -24,4 +50,5 @@
 
 .climate-chart text.label {
   font: 10px sans-serif;
+  pointer-events: none;
 }

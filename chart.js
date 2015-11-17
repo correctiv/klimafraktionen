@@ -40,12 +40,113 @@
       return obj;
   }
 
+  /////////////////////
+  // tooltip factory //
+  /////////////////////
+
+  var Tooltip = function() {
+
+    var tooltip, top, left, ttHead, ttBody;
+
+    function create(parent) {
+      tooltip = parent.append('div').classed('tooltip', true);
+      ttHead = tooltip.append('div').classed('tool-head', true);
+      ttBody = tooltip.append('div').classed('tool-body', true);
+      return this;
+    }
+
+    function update(data) {
+      console.log(data);
+      ttHead.text(data.countryname_en);
+      ttBody.text(data.co2_t_pc_2012);
+    }
+
+    function updatePosition(coords) {
+      top = coords[1] - 50;
+      left = coords[0] > (window.innerWidth / 2) ? coords[0] - 190 : coords[0] + 10;
+
+      tooltip.style({
+        top : top + 'px',
+        left : left + 'px'
+      });
+    }
+
+    function hide() {
+      tooltip.style('display', 'none');
+    }
+
+    function show() {
+      tooltip.style('display', 'block');
+    }
+
+    return {
+      create : create,
+      update : update,
+      updatePosition : updatePosition,
+      show : show,
+      hide : hide
+    }
+
+
+  }
 
   ///////////////////
   // chart factory //
   ///////////////////
 
   return function(_selector, _options) {
+
+    if (typeof _selector === 'undefined') {
+        throw new Error('You need to specify a selector.');
+    }
+
+    if (typeof _options === 'undefined' || !_options.path) {
+        throw new Error('You need to specify options: path');
+    }
+
+    var optionsDefault = {
+        xAccessor: 'gdp_2014',
+        yAccessor: 'co2_t_pc_2012',
+        sizeAccessor: 'population_2014',
+        xAxisLabel: 'gdp 2014',
+        yAxisLabel: 'unemployment 2013',
+        colors: {
+          A : '#005fcc',
+          B : '#5c0000',
+          C : '#009300',
+          D : '#ea8500'
+        },
+        isLogScale : true,
+        pointRange: [10, 1000],
+        xTicks: 5,
+        yTicks: 5,
+        height: 400,
+        lang: 'de',
+        interactive: true,
+        showLegend: false,
+        margin: {
+            top: 40,
+            right: 50,
+            bottom: 40,
+            left: 75
+        },
+        filter: null
+    };
+
+    _options = _merge(_options, optionsDefault);
+
+    d3.csv(_options.path, function(err, csvData) {
+      if(err) {
+        throw new Error('Data not found.');
+        return false;
+      }
+      data = _parseData(csvData, _options);
+      options = _options;
+      selector = _selector;
+      renderChart();
+      bindEvents();
+    });
+
 
     var svg,
         x,
@@ -64,7 +165,8 @@
     var width = 960,
         height = 500,
         maxWidth = 960,
-        transitionDuration = 500;
+        transitionDuration = 500,
+        tooltip = new Tooltip();
 
     var margin = {
       top: 50,
@@ -89,6 +191,12 @@
       parent = d3.select(selector);
       parent.node().innerHTML = '';
 
+      parent = parent
+        .append('div')
+        .classed('climate-chart-wrapper', true);
+
+      tooltip.create(parent);
+      
       svg = parent
         .append('svg')
         .classed('climate-chart', true)
@@ -161,6 +269,7 @@
 
     function createVoronoi() {
       var voro = d3.geom.voronoi()
+        .clipExtent([[0,0], [width, height]])
         .x(function(d,i) { return x(d[options.xAccessor]) })
         .y(function(d,i) { return y(d[options.yAccessor]) })
 
@@ -182,14 +291,25 @@
             .node = bubbles.filter(function(b,i) {
               return b.countryname_en == d.point.countryname_en;
             });
-        });
+        })
+        .on('mousemove', onMouseMove);
 
     }
 
 
     function createAxis(d) {
+      xAxis.scale(x);
 
-      svg.selectAll('.climate-chart .y.axis, .climate-chart .x.axis').remove();
+      if(svg.selectAll('.climate-chart .x.axis')[0].length > 0) {
+        this.selectAll('.x.axis')
+          .transition()
+          .duration(transitionDuration)
+          .call(xAxis);
+
+        return;
+      }
+
+      svg.selectAll('.climate-chart .y.axis').remove();
 
       this.append('g')
         .classed('y axis', true)
@@ -224,16 +344,23 @@
 
     function onMouseEnter(d,i) {
       if(d.node.datum().disabled) { return false };
+      tooltip.update(d.node.datum());
+      tooltip.show();
       d.node.classed('active', true);
+    }
+
+    function onMouseMove(d,i) {
+      console.log(tooltip);
+      console.log(parent);
+      tooltip.updatePosition(d3.mouse(parent.node()));
     }
 
     function onMouseLeave(d,i) {
       d.node.classed('active', false);
+      tooltip.hide();
     }
 
     function focusGroup(groupId) {
-      console.log(svg);
-
       //filter data
       var filteredData = data.filter(function(d,i) {
         return d.fraction == groupId;
@@ -266,7 +393,8 @@
     }
 
     function reset() {
-      updateChart(false);
+      updateChart();
+      
       svg.call(createAxis);
       svg.call(createVoronoi);
 
@@ -275,66 +403,15 @@
         .each(function(d,i) { d.disabled = false });
     }
 
-
-    ////////////////////////////
-    // exports and validators //
-    ////////////////////////////
-
-    if (typeof _selector === 'undefined') {
-        throw new Error('You need to specify a selector.');
-    }
-
-    if (typeof _options === 'undefined' || !_options.path) {
-        throw new Error('You need to specify options: path');
-    }
-
-    var optionsDefault = {
-        xAccessor: 'gdp_2014',
-        yAccessor: 'co2_t_pc_2012',
-        sizeAccessor: 'population_2014',
-        xAxisLabel: 'gdp 2014',
-        yAxisLabel: 'unemployment 2013',
-        colors: {
-          A : '#005fcc',
-          B : '#5c0000',
-          C : '#009300',
-          D : '#ea8500'
-        },
-        isLogScale : true,
-        pointRange: [10, 1000],
-        xTicks: 5,
-        yTicks: 5,
-        height: 400,
-        lang: 'de',
-        interactive: true,
-        showLegend: false,
-        margin: {
-            top: 40,
-            right: 50,
-            bottom: 40,
-            left: 75
-        },
-        filter: null
-    };
-
-    _options = _merge(_options, optionsDefault);
-
-    d3.csv(_options.path, function(err, csvData) {
-      if(err) {
-        throw new Error('Data not found.');
-        return false;
-      }
-      data = _parseData(csvData, _options);
-      options = _options;
-      selector = _selector;
-      renderChart();
-      bindEvents();
-    });
-
     function update(newOpts) {
       options = _merge(options,newOpts);
       updateChart();
     }
+
+
+    /////////////
+    // exports //
+    /////////////
 
     return {
       update : update,
