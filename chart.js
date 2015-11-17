@@ -26,43 +26,6 @@
     return data;
   }
 
-  function _crunchData(data, options) {
-      var keys = ['A', 'B', 'C', 'D'];
-      var cleanData = keys.map(function(key) {
-          return {
-              color: options.colors[key],
-              key: key,
-              values: []
-          }
-      });
-
-      var dataToCrunch = options.filter ? data.filter(options.filter) : data;
-
-      dataToCrunch.forEach(function(d) {
-          if (d.fraction) {
-              var index = keys.indexOf(d.fraction);
-              cleanData[index].values.push({
-                  x: d[options.xAccessor],
-                  y: d[options.yAccessor],
-                  size: d[options.sizeAccessor]
-              });
-          }
-      });
-
-      return cleanData;
-  }
-
-  // function _parseData(data) {
-  //     // cast strings to number if data is numeric
-  //     for (var key in data) {
-  //         var d = +data[key];
-  //         if (!isNaN(d) && isFinite(d)) {
-  //             data[key] = d;
-  //         }
-  //     }
-  //     return data;
-  // }
-
   function _merge() {
       var obj = {},
           key;
@@ -76,6 +39,11 @@
       }
       return obj;
   }
+
+
+  ///////////////////
+  // chart factory //
+  ///////////////////
 
   return function(_selector, _options) {
 
@@ -95,7 +63,8 @@
 
     var width = 960,
         height = 500,
-        maxWidth = 960;
+        maxWidth = 960,
+        transitionDuration = 500;
 
     var margin = {
       top: 50,
@@ -217,25 +186,6 @@
 
     }
 
-    function updateChart() {
-      initScales();
-
-      svg.selectAll('circle.bubble')
-        .transition()
-        .duration(500)
-        .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
-        .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
-        .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
-
-      svg.selectAll('text.label')
-        .transition()
-        .duration(500)
-        .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2 })
-        .attr('y', function(d,i) { return y(d[options.yAccessor]) })
-
-      svg.call(createVoronoi);
-    }
-
 
     function createAxis(d) {
 
@@ -251,7 +201,29 @@
         .call(xAxis);
     }
 
+    function updateChart(ignoreScales) {
+      if(!ignoreScales) {
+        initScales();
+      }
+
+      svg.selectAll('circle.bubble')
+        .transition()
+        .duration(transitionDuration)
+        .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
+        .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
+        .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
+
+      svg.selectAll('text.label')
+        .transition()
+        .duration(transitionDuration)
+        .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2 })
+        .attr('y', function(d,i) { return y(d[options.yAccessor]) })
+
+      svg.call(createVoronoi);
+    }
+
     function onMouseEnter(d,i) {
+      console.log(d.node.datum());
       d.node.classed('active', true);
     }
 
@@ -259,66 +231,108 @@
       d.node.classed('active', false);
     }
 
-      if (typeof _selector === 'undefined') {
-          throw new Error('You need to specify a selector.');
-      }
+    function focusGroup(groupId) {
+      console.log(svg);
 
-      if (typeof _options === 'undefined' || !_options.path) {
-          throw new Error('You need to specify options: path');
-      }
-
-      var optionsDefault = {
-          xAccessor: 'gdp_2014',
-          yAccessor: 'co2_t_pc_2012',
-          sizeAccessor: 'population_2014',
-          xAxisLabel: 'gdp 2014',
-          yAxisLabel: 'unemployment 2013',
-          colors: {
-            A : '#005fcc',
-            B : '#5c0000',
-            C : '#009300',
-            D : '#ea8500'
-          },
-          isLogScale : true,
-          pointRange: [10, 1000],
-          xTicks: 5,
-          yTicks: 5,
-          height: 400,
-          lang: 'de',
-          interactive: true,
-          showLegend: false,
-          margin: {
-              top: 40,
-              right: 50,
-              bottom: 40,
-              left: 75
-          },
-          filter: null
-      };
-
-      _options = _merge(_options, optionsDefault);
-
-      d3.csv(_options.path, function(err, csvData) {
-        if(err) {
-          throw new Error('Data not found.');
-          return false;
-        }
-        data = _parseData(csvData, _options);
-        options = _options;
-        selector = _selector;
-        renderChart();
-        bindEvents();
+      //filter data
+      var filteredData = data.filter(function(d,i) {
+        return d.fraction == groupId;
       });
 
-      function update(newOpts) {
-        options = _merge(options,newOpts);
-        console.log(options);
-        updateChart();
-      }
+      // calculate new x-extent
+      var nExtent = d3.extent(filteredData, function(d,i) {
+        return d[options.xAccessor];
+      });
 
-      return {
-        update : update
+      //set new domain for x-axis
+      x.domain(nExtent);
+      
+      //animate x-axis to new extent
+      svg.selectAll('.x.axis')
+        .transition()
+        .duration(transitionDuration)
+        .call(xAxis);
+
+      // //animate bubbles to new x-positions
+      // svg.selectAll('circle.bubble')
+      //   .transition()
+      //   .attr('cx', function(d,i) { return x(d[options.xAccessor]) });
+
+      //highlight all circles in group
+      svg.selectAll('circle.bubble')
+        .style('opacity', .2)
+        .filter(function(d,i) { return d.fraction == groupId })
+        .style('opacity', 1);
+
+      updateChart(true);
+      svg.call(createVoronoi);
+    }
+
+
+    ////////////////////////////
+    // exports and validators //
+    ////////////////////////////
+
+    if (typeof _selector === 'undefined') {
+        throw new Error('You need to specify a selector.');
+    }
+
+    if (typeof _options === 'undefined' || !_options.path) {
+        throw new Error('You need to specify options: path');
+    }
+
+    var optionsDefault = {
+        xAccessor: 'gdp_2014',
+        yAccessor: 'co2_t_pc_2012',
+        sizeAccessor: 'population_2014',
+        xAxisLabel: 'gdp 2014',
+        yAxisLabel: 'unemployment 2013',
+        colors: {
+          A : '#005fcc',
+          B : '#5c0000',
+          C : '#009300',
+          D : '#ea8500'
+        },
+        isLogScale : true,
+        pointRange: [10, 1000],
+        xTicks: 5,
+        yTicks: 5,
+        height: 400,
+        lang: 'de',
+        interactive: true,
+        showLegend: false,
+        margin: {
+            top: 40,
+            right: 50,
+            bottom: 40,
+            left: 75
+        },
+        filter: null
+    };
+
+    _options = _merge(_options, optionsDefault);
+
+    d3.csv(_options.path, function(err, csvData) {
+      if(err) {
+        throw new Error('Data not found.');
+        return false;
       }
+      data = _parseData(csvData, _options);
+      options = _options;
+      selector = _selector;
+      renderChart();
+      bindEvents();
+    });
+
+    function update(newOpts) {
+      options = _merge(options,newOpts);
+      updateChart();
+    }
+
+    return {
+      update : update,
+      focusGroup : focusGroup
+    }
   }
 
 }));

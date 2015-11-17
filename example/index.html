@@ -8,15 +8,21 @@
   <script src="../chart.js"></script>
 </head>
 <body>
-  <div id="chart"></div>
 
-    <div id="chart2"></div>
+  <button class="focus-btn">Focus Group D</button>
+
+  <div id="chart"></div>
+  <div id="chart2"></div>
   
   <script>
   var Chart = new ClimateChart('#chart', { path: 'data/climate-data.csv' });
-  window.setTimeout(function() {
-    Chart.update({ yAccessor : 'population_2014' })
-  }, 2000);
+  
+  document.querySelector('.focus-btn').addEventListener('click', function() {
+    Chart.focusGroup('D');
+  });
+  // window.setTimeout(function() {
+  //   Chart.update({ yAccessor : 'population_2014' })
+  // }, 2000);
 
   var ChartX = new ClimateChart('#chart2', { path: 'data/climate-data.csv' });
 
