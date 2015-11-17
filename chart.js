@@ -265,7 +265,7 @@
         .enter()
         .append('div')
         .classed('label', true)
-        .classed('left', function(d,i) { return x(d[options.xAccessor]) > (options.maxWidth / 2) })
+        .classed('left', function(d,i) { return x(d[options.xAccessor]) > (width / 2) })
         .style('left', labelPositionLeft)
         .style('top', labelPositionTop)
         .style('display', 'block')
