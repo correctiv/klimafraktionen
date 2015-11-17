@@ -105,8 +105,8 @@
     };
 
     function bindEvents() {
-      d3.select(window).on('resize', function() {
-        renderChart(selector, options, data);
+      window.addEventListener('resize', function() {
+        renderChart(_selector, options, data);
       });
     }
 
