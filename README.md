@@ -39,6 +39,12 @@ var chartOptions = {
 bChart.update(chartOptions);
 ```
 
+Focus one Fraction in a Chart:
+
+```
+bChart.focusGroup('A'); //will focus the chart to the group with the given ID
+```
+
 ## Usage 
 
 You can use the bubblechart-wrapper with commonjs or browser globals.
