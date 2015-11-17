@@ -201,8 +201,8 @@
         .call(xAxis);
     }
 
-    function updateChart(ignoreScales) {
-      if(!ignoreScales) {
+    function updateChart(isGroupFocus) {
+      if(!isGroupFocus) {
         initScales();
       }
 
@@ -223,7 +223,7 @@
     }
 
     function onMouseEnter(d,i) {
-      console.log(d.node.datum());
+      if(d.node.datum().disabled) { return false };
       d.node.classed('active', true);
     }
 
@@ -253,19 +253,26 @@
         .duration(transitionDuration)
         .call(xAxis);
 
-      // //animate bubbles to new x-positions
-      // svg.selectAll('circle.bubble')
-      //   .transition()
-      //   .attr('cx', function(d,i) { return x(d[options.xAccessor]) });
-
       //highlight all circles in group
       svg.selectAll('circle.bubble')
         .style('opacity', .2)
+        .each(function(d,i) { d.disabled = true })
         .filter(function(d,i) { return d.fraction == groupId })
-        .style('opacity', 1);
+        .style('opacity', 1)
+        .each(function(d,i) { d.disabled = false });
 
       updateChart(true);
       svg.call(createVoronoi);
+    }
+
+    function reset() {
+      updateChart(false);
+      svg.call(createAxis);
+      svg.call(createVoronoi);
+
+      svg.selectAll('circle.bubble')
+        .style('opacity', 1)
+        .each(function(d,i) { d.disabled = false });
     }
 
 
@@ -331,7 +338,8 @@
 
     return {
       update : update,
-      focusGroup : focusGroup
+      focusGroup : focusGroup,
+      reset : reset
     }
   }
 

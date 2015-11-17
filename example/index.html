@@ -10,6 +10,7 @@
 <body>
 
   <button class="focus-btn">Focus Group D</button>
+  <button class="reset-btn">Reset</button>
 
   <div id="chart"></div>
   <div id="chart2"></div>
@@ -20,6 +21,8 @@
   document.querySelector('.focus-btn').addEventListener('click', function() {
     Chart.focusGroup('D');
   });
+  
+  document.querySelector('.reset-btn').addEventListener('click', Chart.reset);
   // window.setTimeout(function() {
   //   Chart.update({ yAccessor : 'population_2014' })
   // }, 2000);
