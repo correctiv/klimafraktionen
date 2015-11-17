@@ -138,7 +138,7 @@
         transitionDuration: 500
     };
 
-    _options = _merge(_options, optionsDefault);
+    _options = _merge(optionsDefault, _options);
 
     d3.csv(_options.path, function(err, csvData) {
       if(err) {
