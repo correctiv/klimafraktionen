@@ -56,3 +56,13 @@ var BubbleChart = require('./bubble-chart');
 ```
 <script src="bubble-chart/index.js"></script>
 ```
+
+#### TODO
+
+- [ ] Number format
+- [ ] i18n
+- [ ] Tooltip
+- [ ] Testing buttons / dropdowns
+- [ ] Scale changes (transitions)
+- [ ] Label locator
+- [ ] Link in Labels
