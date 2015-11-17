@@ -46,9 +46,10 @@
 
   var Tooltip = function() {
 
-    var tooltip, top, left, ttHead, ttBody;
+    var tooltip, top, left, ttHead, ttBody, chartWidth;
 
-    function create(parent) {
+    function create(parent, cw) {
+      chartWidth = cw;
       tooltip = parent.append('div').classed('tooltip', true);
       ttHead = tooltip.append('div').classed('tool-head', true);
       ttBody = tooltip.append('div').classed('tool-body', true);
@@ -62,7 +63,7 @@
 
     function updatePosition(coords) {
       top = coords[1] - 50;
-      left = coords[0] > (window.innerWidth / 2) ? coords[0] - 190 : coords[0] + 10;
+      left = coords[0] > (chartWidth / 2) ? coords[0] - 190 : coords[0] + 10;
 
       tooltip.style({
         top : top + 'px',
@@ -194,7 +195,7 @@
         .append('div')
         .classed('climate-chart-wrapper', true);
 
-      tooltip.create(parent);
+      tooltip.create(parent, width);
       
       svg = parent
         .append('svg')

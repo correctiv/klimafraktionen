@@ -13,7 +13,7 @@
   background: rgba(255,255,255,.8);
   border: 1px solid #ddd;
   z-index: 1000;
-  padding: 20px;
+  padding: 10px;
   pointer-events: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
