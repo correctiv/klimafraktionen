@@ -50,7 +50,6 @@
 
 .climate-chart-wrapper div.label {
   font: 10px sans-serif;
-  pointer-events: none;
   position: absolute;
 }
 

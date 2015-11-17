@@ -73,8 +73,8 @@ var BubbleChart = require('./bubble-chart');
 
 - [ ] Number format
 - [ ] i18n
-- [ ] Tooltip
+- [X] Tooltip
 - [ ] Testing buttons / dropdowns
-- [ ] Scale changes (transitions)
+- [X] Scale changes (transitions)
 - [ ] Label locator
 - [ ] Link in Labels

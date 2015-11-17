@@ -269,7 +269,7 @@
         .style('left', labelPositionLeft)
         .style('top', labelPositionTop)
         .style('display', 'block')
-        .text(function(d) { return d.countryname_en; });
+        .html(function(d) { return d.label_html; });
     }
     
     function labelPositionLeft(d,i) {
