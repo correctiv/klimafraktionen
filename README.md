@@ -51,6 +51,12 @@ Focus one Fraction in a Chart:
 bChart.focusGroup('A'); //will focus the chart to the group with the given ID
 ```
 
+Reset a Chart after transition:
+
+```
+bChart.reset();
+```
+
 ## Usage 
 
 You can use the bubblechart-wrapper with commonjs or browser globals.
@@ -77,4 +83,4 @@ var BubbleChart = require('./bubble-chart');
 - [ ] Testing buttons / dropdowns
 - [X] Scale changes (transitions)
 - [ ] Label locator
-- [ ] Link in Labels
+- [X] Link in Labels
