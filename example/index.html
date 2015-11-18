@@ -5,57 +5,41 @@
   <title>Klimafraktionen</title>
   <link rel="stylesheet" href="../style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.de,Intl.~locale.en,Intl.~locale.fr"></script>
   <script src="../chart.js"></script>
 </head>
 <body>
 
-  <button class="focus-btn">Focus Group D</button>
-  <button class="reset-btn">Reset</button>
+  <button data-action-focus="A">Focus Group A</button>
+  <button data-action-focus="B">Focus Group B</button>
+  <button data-action-focus="C">Focus Group C</button>
+  <button data-action-focus="D">Focus Group D</button>
+
+  <button data-action-reset=>Reset</button>
 
   <div id="chart"></div>
-  <div id="chart2"></div>
-  <div id="chart3"></div>
-  <div id="chart4"></div>
-  
+
   <script>
-  var Chart = new ClimateChart('#chart', { path: 'data/climate-data.csv' });
-  
-  document.querySelector('.focus-btn').addEventListener('click', function() {
-    Chart.focusGroup('D');
-  });
-  
-  document.querySelector('.reset-btn').addEventListener('click', Chart.reset);
 
-  var Chart2 = new ClimateChart('#chart2', { path: 'data/climate-data.csv', transitionDuration: 2000 });
+    var chart = new ClimateChart('#chart', {
+      path: 'data/climate-data.csv',
+      locale: 'de'
+    });
 
-  var i = 0;
-  var groups = ['A', 'B', 'C', 'D'];
-  window.setInterval(function() {
-    Chart2.focusGroup(groups[i]);
-    i++;
-    if(i >= groups.length) {
-      i = 0;
-      Chart2.reset();
-    }
-  }, 2000);
+    var focusButtons = document.querySelectorAll('[data-action-focus]');
+    var resetButton = document.querySelector('[data-action-reset]');
 
+    resetButton.addEventListener('click', function() {
+      chart.reset();
+    });
 
-  var Chart3 = new ClimateChart('#chart3', { 
-    path: 'data/climate-data.csv',
-    aspectRatio: 1,
-    maxWidth: 600,
-    minRadius: 2,
-    maxRadius: 10,
-    isLogScale: true
-  });
+    Array.prototype.forEach.call(focusButtons, function(button){
+      button.addEventListener('click', function() {
+        var focusTarget = button.getAttribute('data-action-focus');
+        chart.focusGroup(focusTarget);
+      });
+    });
 
-  var Chart4 = new ClimateChart('#chart4', { 
-    path: 'data/climate-data.csv',
-    aspectRatio: .9,
-    maxWidth: 1200,
-    minRadius: 1,
-    maxRadius: 50
-  });
   </script>
 </body>
 </html>
