@@ -1,25 +1,28 @@
 (function(root, factory) {
+  'use strict';
+
   if (typeof module !== 'undefined' && module.exports) {
-      var d3 = require('d3');
-      window.d3 = d3;
-      module.exports = factory(d3);
+    var d3 = require('d3');
+    window.d3 = d3;
+    module.exports = factory(d3);
   } else {
-      root.ClimateChart = factory(root.d3);
+    root.ClimateChart = factory(root.d3);
   }
 }(this, function(d3) {
+  'use strict';
 
   ///////////////////////
   // private functions //
   ///////////////////////
 
   function _parseData(data, o) {
-    data.forEach(function(d,i) {
+    data.forEach(function(d) {
       d[o.xAccessor] = parseFloat(d[o.xAccessor]);
       d[o.yAccessor] = parseFloat(d[o.yAccessor]);
       d[o.sizeAccessor] = parseFloat(d[o.sizeAccessor]);
     });
 
-    data = data.filter(function(d,i) {
+    data = data.filter(function(d) {
       return !isNaN(d[o.xAccessor]) && !isNaN(d[o.yAccessor]) && !isNaN(d[o.sizeAccessor]);
     });
 
@@ -27,17 +30,18 @@
   }
 
   function _merge() {
-      var obj = {},
-          key;
+    var obj = {};
+    var key;
 
-      for (var i = 0; i < arguments.length; i++) {
-          for (key in arguments[i]) {
-              if (arguments[i].hasOwnProperty(key)) {
-                  obj[key] = arguments[i][key];
-              }
-          }
+    for (var i = 0; i < arguments.length; i++) {
+      for (key in arguments[i]) {
+        if (arguments[i].hasOwnProperty(key)) {
+          obj[key] = arguments[i][key];
+        }
       }
-      return obj;
+    }
+
+    return obj;
   }
 
   /////////////////////
@@ -66,8 +70,8 @@
       left = coords[0] > (chartWidth / 2) ? coords[0] - 190 : coords[0] + 10;
 
       tooltip.style({
-        top : top + 'px',
-        left : left + 'px'
+        top: top + 'px',
+        left: left + 'px'
       });
     }
 
@@ -80,15 +84,13 @@
     }
 
     return {
-      create : create,
-      update : update,
-      updatePosition : updatePosition,
-      show : show,
-      hide : hide
-    }
-
-
-  }
+      create: create,
+      update: update,
+      updatePosition: updatePosition,
+      show: show,
+      hide: hide
+    };
+  };
 
   ///////////////////
   // chart factory //
@@ -111,12 +113,12 @@
         xAxisLabel: 'gdp 2014',
         yAxisLabel: 'unemployment 2013',
         colors: {
-          A : '#005fcc',
-          B : '#5c0000',
-          C : '#009300',
-          D : '#ea8500'
+          A: '#005fcc',
+          B: '#5c0000',
+          C: '#009300',
+          D: '#ea8500'
         },
-        isLogScale : true,
+        isLogScale: true,
         pointRange: [10, 1000],
         xTicks: 5,
         yTicks: 5,
@@ -138,21 +140,6 @@
         transitionDuration: 500
     };
 
-    _options = _merge(optionsDefault, _options);
-
-    d3.csv(_options.path, function(err, csvData) {
-      if(err) {
-        throw new Error('Data not found.');
-        return false;
-      }
-      data = _parseData(csvData, _options);
-      options = _options;
-      selector = _selector;
-      renderChart();
-      bindEvents();
-    });
-
-
     var svg,
         x,
         y,
@@ -161,66 +148,39 @@
         yAxis,
         xExtent,
         yExtent,
+        rExtent,
         parent,
         data,
         options,
         selector,
         bubbles,
-        transitionDuration,
         margin,
         width,
         height,
-        maxWidth,
-        aspectRatio,
         tooltip = new Tooltip();
 
-    function bindEvents() {
-      window.addEventListener('resize', function() {
-        renderChart(_selector, options, data);
-      });
+    function onMouseEnter(d) {
+      if(d.node.datum().disabled) {
+        return false;
+      }
+      tooltip.update(d.node.datum());
+      tooltip.show();
+      d.node.classed('active', true);
     }
 
-    function updateDimensions(winWidth) {
-      width = winWidth < options.maxWidth ? winWidth : options.maxWidth;
-      width = width - margin.right - margin.left;
-      height = width * options.aspectRatio;
+    function onMouseMove() {
+      tooltip.updatePosition(d3.mouse(parent.node()));
     }
 
-    function renderChart() {
-      margin = options.margin;
-            
-      updateDimensions(window.innerWidth);
-      parent = d3.select(selector);
-      parent.node().innerHTML = '';
-
-      parent = parent
-        .append('div')
-        .classed('climate-chart-wrapper', true);
-
-      tooltip.create(parent, width);
-      
-      svg = parent
-        .append('svg')
-        .classed('climate-chart', true)
-        .attr('width', width + margin.right + margin.left)
-        .attr('height', height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      initScales();
-      initAxis();
-
-      svg.call(createAxis);
-      svg.call(createBubbles);
-      svg.call(createVoronoi);
-
-      parent.call(createLabels);
+    function onMouseLeave(d) {
+      d.node.classed('active', false);
+      tooltip.hide();
     }
 
     function initScales() {
-      xExtent = d3.extent(data, function(d,i) { return d[options.xAccessor] });
-      yExtent = d3.extent(data, function(d,i) { return d[options.yAccessor] });
-      rExtent = d3.extent(data, function(d,i) { return d[options.sizeAccessor] });
+      xExtent = d3.extent(data, function(d) { return d[options.xAccessor]; });
+      yExtent = d3.extent(data, function(d) { return d[options.yAccessor]; });
+      rExtent = d3.extent(data, function(d) { return d[options.sizeAccessor]; });
 
       if(options.isLogScale) {
         x = d3.scale.log().domain(xExtent).range([0, width]);
@@ -230,17 +190,35 @@
       }
 
       y = d3.scale.linear().domain([-.5, yExtent[1]]).range([height, 0]);
-      r = d3.scale.sqrt().domain(rExtent).range([options.minRadius,options.maxRadius]);
-      color = d3.scale.ordinal().range(options.colors);
+      r = d3.scale.sqrt().domain(rExtent).range([options.minRadius, options.maxRadius]);
     }
 
     function initAxis() {
       xAxis = d3.svg.axis()
         .orient('bottom')
         .scale(x)
-        .ticks(2, d3.format(",d"));
+        .ticks(2, d3.format(',d'));
 
       yAxis = d3.svg.axis().orient('left').scale(y);
+    }
+
+    function updateDimensions(winWidth) {
+      width = winWidth < options.maxWidth ? winWidth : options.maxWidth;
+      width = width - margin.right - margin.left;
+      height = width * options.aspectRatio;
+    }
+
+    function labelPositionLeft(d) {
+      var posX = x(d[options.xAccessor]);
+      var factor = posX > options.maxWidth / 2 ? -1 : 1;
+      posX += (r(d[options.sizeAccessor]) + 5) * factor;
+      posX += margin.left;
+      posX += 'px';
+      return posX;
+    }
+
+    function labelPositionTop(d) {
+      return (y(d[options.yAccessor]) - 6 + margin.top) + 'px';
     }
 
     function createBubbles() {
@@ -249,47 +227,33 @@
         .enter()
         .append('circle')
         .classed('bubble', true)
-        .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
-        .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
-        .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
-        .attr('fill', function(d,i) { return options.colors[d['fraction']] })
-        .attr('stroke', function(d,i) { return options.colors[d['fraction']] })
+        .attr('cx', function(d) { return x(d[options.xAccessor]); })
+        .attr('cy', function(d) { return y(d[options.yAccessor]); })
+        .attr('r', function(d) { return r(d[options.sizeAccessor]); })
+        .attr('fill', function(d) { return options.colors[d.fraction]; })
+        .attr('stroke', function(d) { return options.colors[d.fraction]; });
     }
 
     function createLabels() {
-
       this.selectAll('div.label')
         .data(data.filter(function(d) {
-          return d.labeled != '';
+          return d.labeled !== '';
         }))
         .enter()
         .append('div')
         .classed('label', true)
-        .classed('left', function(d,i) { return x(d[options.xAccessor]) > (width / 2) })
+        .classed('left', function(d) { return x(d[options.xAccessor]) > (width / 2); })
         .style('left', labelPositionLeft)
         .style('top', labelPositionTop)
         .style('display', 'block')
         .html(function(d) { return d.label_html; });
     }
-    
-    function labelPositionLeft(d,i) {
-      var pos_x = x(d[options.xAccessor]);
-      var factor = pos_x > options.maxWidth / 2 ? -1 : 1;
-      pos_x += (r(d[options.sizeAccessor])+5) * factor;
-      pos_x += margin.left;
-      pos_x += 'px';
-      return pos_x;
-    }
-
-    function labelPositionTop(d,i) {
-      return (y(d[options.yAccessor]) - 6 + margin.top) + 'px';
-    }
 
     function createVoronoi() {
       var voro = d3.geom.voronoi()
-        .clipExtent([[0,0], [width, height]])
-        .x(function(d,i) { return x(d[options.xAccessor]) })
-        .y(function(d,i) { return y(d[options.yAccessor]) })
+        .clipExtent([[0, 0], [width, height]])
+        .x(function(d) { return x(d[options.xAccessor]); })
+        .y(function(d) { return y(d[options.yAccessor]); });
 
       this.select('.voronoi-overlay').remove();
 
@@ -306,17 +270,15 @@
         .each(function(d) {
           d3.select(this)
             .datum()
-            .node = bubbles.filter(function(b,i) {
-              return b.countryname_en == d.point.countryname_en;
+            .node = bubbles.filter(function(b) {
+              return b.countryname_en === d.point.countryname_en;
             });
         })
         .on('mousemove', onMouseMove);
 
     }
 
-
-    function createAxis(d) {
-
+    function createAxis() {
       if(svg.selectAll('.climate-chart .x.axis')[0].length > 0) {
         this.selectAll('.x.axis')
           .transition()
@@ -337,6 +299,42 @@
         .attr('transform', 'translate(0,' + height + ')')
         .call(xAxis);
     }
+    function renderChart() {
+      margin = options.margin;
+
+      updateDimensions(window.innerWidth);
+      parent = d3.select(selector);
+      parent.node().innerHTML = '';
+
+      parent = parent
+        .append('div')
+        .classed('climate-chart-wrapper', true);
+
+      tooltip.create(parent, width);
+
+      svg = parent
+        .append('svg')
+        .classed('climate-chart', true)
+        .attr('width', width + margin.right + margin.left)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+      initScales();
+      initAxis();
+
+      svg.call(createAxis);
+      svg.call(createBubbles);
+      svg.call(createVoronoi);
+
+      parent.call(createLabels);
+    }
+
+    function bindEvents() {
+      window.addEventListener('resize', function() {
+        renderChart(_selector, options, data);
+      });
+    }
 
     function updateChart(isGroupFocus) {
       if(!isGroupFocus) {
@@ -346,49 +344,33 @@
       svg.selectAll('circle.bubble')
         .transition()
         .duration(options.transitionDuration)
-        .attr('cx', function(d,i) { return x(d[options.xAccessor]) })
-        .attr('cy', function(d,i) { return y(d[options.yAccessor]) })
-        .attr('r', function(d,i) { return r(d[options.sizeAccessor]) })
+        .attr('cx', function(d) { return x(d[options.xAccessor]); })
+        .attr('cy', function(d) { return y(d[options.yAccessor]); })
+        .attr('r', function(d) { return r(d[options.sizeAccessor]); });
 
       svg.selectAll('text.label')
         .transition()
         .duration(options.transitionDuration)
-        .attr('x', function(d,i) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2 })
-        .attr('y', function(d,i) { return y(d[options.yAccessor]) })
+        .attr('x', function(d) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2; })
+        .attr('y', function(d) { return y(d[options.yAccessor]); });
 
       svg.call(createVoronoi);
     }
 
-    function onMouseEnter(d,i) {
-      if(d.node.datum().disabled) { return false };
-      tooltip.update(d.node.datum());
-      tooltip.show();
-      d.node.classed('active', true);
-    }
-
-    function onMouseMove(d,i) {
-      tooltip.updatePosition(d3.mouse(parent.node()));
-    }
-
-    function onMouseLeave(d,i) {
-      d.node.classed('active', false);
-      tooltip.hide();
-    }
-
     function focusGroup(groupId) {
       //filter data
-      var filteredData = data.filter(function(d,i) {
-        return d.fraction == groupId;
+      var filteredData = data.filter(function(d) {
+        return d.fraction === groupId;
       });
 
       // calculate new x-extent
-      var nExtent = d3.extent(filteredData, function(d,i) {
+      var nExtent = d3.extent(filteredData, function(d) {
         return d[options.xAccessor];
       });
 
       //set new domain for x-axis
       x.domain(nExtent);
-      
+
       //animate x-axis to new extent
       svg.selectAll('.x.axis')
         .transition()
@@ -398,14 +380,14 @@
       //highlight all circles in group
       svg.selectAll('circle.bubble')
         .style('opacity', .2)
-        .each(function(d,i) { d.disabled = true })
-        .filter(function(d,i) { return d.fraction == groupId })
+        .each(function(d) { d.disabled = true; })
+        .filter(function(d) { return d.fraction === groupId; })
         .style('opacity', 1)
-        .each(function(d,i) { d.disabled = false });
+        .each(function(d) { d.disabled = false; });
 
       parent.selectAll('div.label')
         .style('display', 'none')
-        .filter(function(d) { return d.fraction == groupId })
+        .filter(function(d) { return d.fraction === groupId; })
         .transition()
         .duration(options.transitionDuration)
         .style('left', labelPositionLeft)
@@ -418,7 +400,7 @@
     function reset() {
       updateChart();
       xAxis.scale(x);
-      
+
       svg.call(createAxis);
       svg.call(createVoronoi);
 
@@ -426,29 +408,41 @@
         .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
-        .style('left', labelPositionLeft)
+        .style('left', labelPositionLeft);
 
 
       svg.selectAll('circle.bubble')
         .style('opacity', 1)
-        .each(function(d,i) { d.disabled = false });
+        .each(function(d) { d.disabled = false; });
     }
 
     function update(newOpts) {
-      options = _merge(options,newOpts);
+      options = _merge(options, newOpts);
       updateChart();
     }
 
+    _options = _merge(optionsDefault, _options);
+
+    d3.csv(_options.path, function(err, csvData) {
+      if(err) {
+        throw new Error('Data not found.');
+      }
+      data = _parseData(csvData, _options);
+      options = _options;
+      selector = _selector;
+      renderChart();
+      bindEvents();
+    });
 
     /////////////
     // exports //
     /////////////
 
     return {
-      update : update,
-      focusGroup : focusGroup,
-      reset : reset
-    }
-  }
+      update: update,
+      focusGroup: focusGroup,
+      reset: reset
+    };
+  };
 
 }));
