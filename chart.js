@@ -137,7 +137,8 @@
         maxRadius: 15,
         maxWidth: 960,
         aspectRatio: .7,
-        transitionDuration: 500
+        transitionDuration: 500,
+        locale: 'en'
     };
 
     var svg,
@@ -197,7 +198,9 @@
       xAxis = d3.svg.axis()
         .orient('bottom')
         .scale(x)
-        .ticks(2, d3.format(',d'));
+        .ticks(4, function(d) {
+          return new Intl.NumberFormat(options.locale).format(d);
+        });
 
       yAxis = d3.svg.axis().orient('left').scale(y);
     }
