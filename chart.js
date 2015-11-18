@@ -302,6 +302,22 @@
         .attr('transform', 'translate(0,' + height + ')')
         .call(xAxis);
     }
+
+    function createAxisDescription() {
+      svg.append('text')
+        .attr('text-anchor', 'end')
+        .attr('x', width)
+        .attr('y', height + 40)
+        .text(options.xAxisDescription || options.xAccessor);
+
+      svg.append('text')
+        .attr('text-anchor', 'end')
+        .attr('y', 10)
+        .attr('dy', '.75em')
+        .attr('transform', 'rotate(-90)')
+        .text(options.yAxisDescription || options.yAccessor);
+    }
+
     function renderChart() {
       margin = options.margin;
 
@@ -327,6 +343,7 @@
       initAxis();
 
       svg.call(createAxis);
+      svg.call(createAxisDescription);
       svg.call(createBubbles);
       svg.call(createVoronoi);
 
@@ -412,7 +429,6 @@
         .transition()
         .duration(options.transitionDuration)
         .style('left', labelPositionLeft);
-
 
       svg.selectAll('circle.bubble')
         .style('opacity', 1)
