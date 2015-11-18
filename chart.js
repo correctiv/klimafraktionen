@@ -110,8 +110,8 @@
         xAccessor: 'gdp_2014',
         yAccessor: 'co2_t_pc_2012',
         sizeAccessor: 'population_2014',
-        xAxisLabel: 'gdp 2014',
-        yAxisLabel: 'unemployment 2013',
+        xAxisDivisor: 1,
+        yAxisDivisor: 1,
         colors: {
           A: '#005fcc',
           B: '#5c0000',
@@ -199,10 +199,17 @@
         .orient('bottom')
         .scale(x)
         .ticks(4, function(d) {
-          return new Intl.NumberFormat(options.locale).format(d);
+          var output = d / options.xAxisDivisor;
+          return new Intl.NumberFormat(options.locale).format(output);
         });
 
-      yAxis = d3.svg.axis().orient('left').scale(y);
+      yAxis = d3.svg.axis()
+        .orient('left')
+        .scale(y)
+        .tickFormat(function(d) {
+          var output = d / options.yAxisDivisor;
+          return new Intl.NumberFormat(options.locale).format(output);
+        });
     }
 
     function updateDimensions(winWidth) {
@@ -212,16 +219,11 @@
     }
 
     function labelPositionLeft(d) {
-      var posX = x(d[options.xAccessor]);
-      var factor = posX > options.maxWidth / 2 ? -1 : 1;
-      posX += (r(d[options.sizeAccessor]) + 5) * factor;
-      posX += margin.left;
-      posX += 'px';
-      return posX;
+      return  x(d[options.xAccessor]) + margin.left + 'px';
     }
 
     function labelPositionTop(d) {
-      return (y(d[options.yAccessor]) - 6 + margin.top) + 'px';
+      return y(d[options.yAccessor]) - 7 + margin.top + 'px';
     }
 
     function createBubbles() {
@@ -371,7 +373,7 @@
       svg.selectAll('text.label')
         .transition()
         .duration(options.transitionDuration)
-        .attr('x', function(d) { return x(d[options.xAccessor]) - r(d[options.sizeAccessor]) - 2; })
+        .attr('x', function(d) { return x(d[options.xAccessor]); })
         .attr('y', function(d) { return y(d[options.yAccessor]); });
 
       svg.call(createVoronoi);

@@ -11,7 +11,7 @@
   left: 0;
   width: 180px;
   height: 100px;
-  background: rgba(255,255,255,.8);
+  background: rgba(255, 255, 255, .8);
   border: 1px solid #ddd;
   z-index: 1000;
   padding: 10px;
@@ -49,12 +49,26 @@
   fill : transparent;
 }
 
-.climate-chart-wrapper div.label {
-  font: 10px sans-serif;
+.climate-chart-wrapper .label {
+  font: 11px sans-serif;
+  line-height: 1em;
+  text-shadow: 1px 1px 10px #fafafa;
+  font-weight: bold;
   position: absolute;
 }
 
-.climate-chart-wrapper div.label.left {
+.climate-chart-wrapper .label:after {
+  content: '';
+  display: inline-block;
+  width: 35px;
+  height: 1px;
+  margin-left: 5px;
+  position: relative;
+  top: -1px;
+  background: black;
+}
+
+.climate-chart-wrapper .label.left {
   -webkit-transform: translateX(-100%);
   -moz-transform: translateX(-100%);
   -o-transform: translateX(-100%);

@@ -10,12 +10,12 @@
 </head>
 <body>
 
-  <button data-action-focus="A">Focus Group A</button>
-  <button data-action-focus="B">Focus Group B</button>
-  <button data-action-focus="C">Focus Group C</button>
-  <button data-action-focus="D">Focus Group D</button>
+  <button data-action-focus="A">Bestimmer</button>
+  <button data-action-focus="B">Blockierer</button>
+  <button data-action-focus="C">Aufsteiger</button>
+  <button data-action-focus="D">Schwache</button>
 
-  <button data-action-reset=>Reset</button>
+  <button data-action-reset=>Zurücksetzen</button>
 
   <div id="chart"></div>
 
@@ -23,7 +23,10 @@
 
     var chart = new ClimateChart('#chart', {
       path: 'data/climate-data.csv',
-      locale: 'de'
+      locale: 'de',
+      xAxisDivisor: 1000000000,
+      xAxisDescription: 'Bruttoinlandsprodukt (in Milliarden Euro)',
+      yAxisDescription: 'CO2-Ausstoß pro Kopf (in Tonnen)'
     });
 
     var focusButtons = document.querySelectorAll('[data-action-focus]');
