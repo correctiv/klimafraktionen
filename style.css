@@ -1,5 +1,6 @@
 .climate-chart-wrapper {
   position: relative;
+  background: #fafafa;
 }
 
 .climate-chart-wrapper .tooltip {
