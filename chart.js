@@ -219,11 +219,10 @@
     }
 
     function labelPositionLeft(d) {
-      return  x(d[options.xAccessor]) + margin.left + 'px';
-    }
-
-    function labelPositionTop(d) {
-      return y(d[options.yAccessor]) - 7 + margin.top + 'px';
+      var xPos = x(d[options.xAccessor]);
+      var center = width / 2;
+      var offset = 30;
+      return xPos < center ? xPos + offset : xPos - offset;
     }
 
     function createBubbles() {
@@ -239,17 +238,40 @@
         .attr('stroke', function(d) { return options.colors[d.fraction]; });
     }
 
-    function createLabels() {
-      this.selectAll('div.label')
-        .data(data.filter(function(d) {
-          return d.labeled !== '';
-        }))
+    function createLabels(labels) {
+
+      svg.selectAll('line.line')
+        .data(labels)
+        .enter()
+        .append('line')
+        .classed('line', true)
+        .attr('x1', function(d) { return x(d[options.xAccessor]); })
+        .attr('y1', function(d) { return y(d[options.yAccessor]); })
+        .attr('x2', labelPositionLeft)
+        .attr('y2', function(d) { return y(d[options.yAccessor]); })
+        .attr('stroke-width', 1)
+        .attr('stroke', 'black');
+
+      svg.selectAll('circle.dot')
+        .data(labels)
+        .enter()
+        .append('circle')
+        .classed('dot', true)
+        .attr('cx', function(d) { return x(d[options.xAccessor]); })
+        .attr('cy', function(d) { return y(d[options.yAccessor]); })
+        .attr('r', 2)
+        .attr('fill', 'black');
+
+      parent.selectAll('div.label')
+        .data(labels)
         .enter()
         .append('div')
         .classed('label', true)
         .classed('left', function(d) { return x(d[options.xAccessor]) > (width / 2); })
-        .style('left', labelPositionLeft)
-        .style('top', labelPositionTop)
+        .style('margin-top', margin.top - 5 + 'px')
+        .style('margin-left', margin.left + 'px')
+        .style('left', function(d) { return labelPositionLeft(d) + 'px'; })
+        .style('top',  function(d) { return y(d[options.yAccessor]) + 'px'; })
         .style('display', 'block')
         .html(function(d) { return d.label_html; });
     }
@@ -280,7 +302,6 @@
             });
         })
         .on('mousemove', onMouseMove);
-
     }
 
     function createAxis() {
@@ -349,7 +370,11 @@
       svg.call(createBubbles);
       svg.call(createVoronoi);
 
-      parent.call(createLabels);
+      var labels = data.filter(function(d) {
+        return d.labeled !== '';
+      });
+
+      createLabels(labels);
     }
 
     function bindEvents() {
