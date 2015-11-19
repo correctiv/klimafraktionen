@@ -1,10 +1,40 @@
+.climate-factions {
+  background: #fafafa;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.climate-factions__button {
+  color: white;
+  background: gray;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+}
+
+.climate-factions__button--a { background: #005fcc }
+.climate-factions__button--b { background: #5c0000 }
+.climate-factions__button--c { background: #009300 }
+.climate-factions__button--d { background: #ea8500 }
+
+.climate-factions__button--active.climate-factions__button--a { background: #002f66 }
+.climate-factions__button--active.climate-factions__button--b { background: #2e0000 }
+.climate-factions__button--active.climate-factions__button--c { background: #004900 }
+.climate-factions__button--active.climate-factions__button--d { background: #754200 }
+
+.climate-factions__button-group {
+  position: relative;
+  top: 25px;
+  left: 50px;
+  z-index: 1;
+}
+
 .climate-chart-wrapper {
   position: relative;
-  background: #fafafa;
 }
 
 .climate-chart-wrapper .tooltip {
-  font-family: sans-serif;
   display: none;
   position: absolute;
   top: 0;
@@ -36,7 +66,7 @@
 }
 
 .climate-chart .bubble {
-  fill-opacity: .5;
+  fill-opacity: .6;
   stroke-width: 1;
   stroke-opacity: 1;
 }
