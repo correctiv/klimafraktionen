@@ -435,10 +435,30 @@
       parent.selectAll('div.label')
         .style('display', 'none')
         .filter(function(d) { return d.fraction === groupId; })
+        .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
-        .style('left', labelPositionLeft)
-        .style('display', 'block');
+        .style('left', function(d,i) { return labelPositionLeft(d) + 'px' });
+
+      svg.selectAll('line.line')
+        .style('display', 'none')
+        .filter(function(d) { return d.fraction === groupId; })
+        .style('display', 'block')
+        .transition()
+        .duration(options.transitionDuration)
+        .attr('x1', function(d) { return x(d[options.xAccessor]); })
+        .attr('y1', function(d) { return y(d[options.yAccessor]); })
+        .attr('x2', labelPositionLeft)
+        .attr('y2', function(d) { return y(d[options.yAccessor]); })
+
+      svg.selectAll('circle.dot')
+        .style('display', 'none')
+        .filter(function(d) { return d.fraction === groupId; })
+        .style('display', 'block')
+        .transition()
+        .duration(options.transitionDuration)
+        .attr('cx', function(d) { return x(d[options.xAccessor]); })
+        .attr('cy', function(d) { return y(d[options.yAccessor]); })
 
       updateChart(true);
       svg.call(createVoronoi);
@@ -455,8 +475,24 @@
         .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
-        .style('left', labelPositionLeft);
+        .style('left', function(d,i) { return labelPositionLeft(d) + 'px' });
+      
+      svg.selectAll('line.line')
+        .style('display', 'block')
+        .transition()
+        .duration(options.transitionDuration)
+        .attr('x1', function(d) { return x(d[options.xAccessor]); })
+        .attr('y1', function(d) { return y(d[options.yAccessor]); })
+        .attr('x2', labelPositionLeft)
+        .attr('y2', function(d) { return y(d[options.yAccessor]); })
 
+      svg.selectAll('circle.dot')
+        .style('display', 'block')
+        .transition()
+        .duration(options.transitionDuration)
+        .attr('cx', function(d) { return x(d[options.xAccessor]); })
+        .attr('cy', function(d) { return y(d[options.yAccessor]); })
+      
       svg.selectAll('circle.bubble')
         .style('opacity', 1)
         .each(function(d) { d.disabled = false; });
