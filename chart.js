@@ -133,8 +133,8 @@
           left: 50
         },
         filter: null,
-        minRadius: 4,
-        maxRadius: 15,
+        minRadius: 2,
+        maxRadius: 30,
         maxWidth: 960,
         aspectRatio: .7,
         transitionDuration: 500,
@@ -182,6 +182,8 @@
       xExtent = d3.extent(data, function(d) { return d[options.xAccessor]; });
       yExtent = d3.extent(data, function(d) { return d[options.yAccessor]; });
       rExtent = d3.extent(data, function(d) { return d[options.sizeAccessor]; });
+
+      console.log(rExtent);
 
       if(options.isLogScale) {
         x = d3.scale.log().domain(xExtent).range([0, width]);
