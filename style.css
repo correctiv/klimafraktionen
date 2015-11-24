@@ -82,20 +82,10 @@
 .climate-chart-wrapper .label {
   font: 11px sans-serif;
   line-height: 1em;
-  text-shadow: 1px 1px 10px #fafafa;
+  text-shadow: 1px 1px 5px white;
   font-weight: bold;
   position: absolute;
-}
-
-.climate-chart-wrapper .label:after {
-  content: '';
-  display: inline-block;
-  width: 35px;
-  height: 1px;
-  margin-left: 5px;
-  position: relative;
-  top: -1px;
-  background: black;
+  padding: 0 5px;
 }
 
 .climate-chart-wrapper .label.left {
