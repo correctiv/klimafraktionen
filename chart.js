@@ -411,18 +411,31 @@
       });
 
       // calculate new x-extent
-      var nExtent = d3.extent(filteredData, function(d) {
+      xExtent = d3.extent(filteredData, function(d) {
         return d[options.xAccessor];
       });
 
+      yExtent = d3.extent(filteredData, function(d) {
+        return d[options.yAccessor];
+      });
+
       //set new domain for x-axis
-      x.domain(nExtent);
+      x.domain(xExtent);
+
+      //set new domain for x-axis
+      y.domain(yExtent);
 
       //animate x-axis to new extent
       svg.selectAll('.x.axis')
         .transition()
         .duration(options.transitionDuration)
         .call(xAxis);
+
+      //animate x-axis to new extent
+      svg.selectAll('.y.axis')
+        .transition()
+        .duration(options.transitionDuration)
+        .call(yAxis);
 
       //highlight all circles in group
       svg.selectAll('circle.bubble')
@@ -438,7 +451,8 @@
         .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
-        .style('left', function(d,i) { return labelPositionLeft(d) + 'px' });
+        .style('top', function(d) { return y(d[options.yAccessor]) + 'px'; })
+        .style('left', function(d) { return labelPositionLeft(d) + 'px'; });
 
       svg.selectAll('line.line')
         .style('display', 'none')
@@ -449,7 +463,7 @@
         .attr('x1', function(d) { return x(d[options.xAccessor]); })
         .attr('y1', function(d) { return y(d[options.yAccessor]); })
         .attr('x2', labelPositionLeft)
-        .attr('y2', function(d) { return y(d[options.yAccessor]); })
+        .attr('y2', function(d) { return y(d[options.yAccessor]); });
 
       svg.selectAll('circle.dot')
         .style('display', 'none')
@@ -458,7 +472,7 @@
         .transition()
         .duration(options.transitionDuration)
         .attr('cx', function(d) { return x(d[options.xAccessor]); })
-        .attr('cy', function(d) { return y(d[options.yAccessor]); })
+        .attr('cy', function(d) { return y(d[options.yAccessor]); });
 
       updateChart(true);
       svg.call(createVoronoi);
@@ -467,6 +481,7 @@
     function reset() {
       updateChart();
       xAxis.scale(x);
+      yAxis.scale(y);
 
       svg.call(createAxis);
       svg.call(createVoronoi);
@@ -475,8 +490,9 @@
         .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
-        .style('left', function(d,i) { return labelPositionLeft(d) + 'px' });
-      
+        .style('top', function(d) { return y(d[options.yAccessor]) + 'px'; })
+        .style('left', function(d) { return labelPositionLeft(d) + 'px'; });
+
       svg.selectAll('line.line')
         .style('display', 'block')
         .transition()
@@ -484,15 +500,15 @@
         .attr('x1', function(d) { return x(d[options.xAccessor]); })
         .attr('y1', function(d) { return y(d[options.yAccessor]); })
         .attr('x2', labelPositionLeft)
-        .attr('y2', function(d) { return y(d[options.yAccessor]); })
+        .attr('y2', function(d) { return y(d[options.yAccessor]); });
 
       svg.selectAll('circle.dot')
         .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
         .attr('cx', function(d) { return x(d[options.xAccessor]); })
-        .attr('cy', function(d) { return y(d[options.yAccessor]); })
-      
+        .attr('cy', function(d) { return y(d[options.yAccessor]); });
+
       svg.selectAll('circle.bubble')
         .style('opacity', 1)
         .each(function(d) { d.disabled = false; });
