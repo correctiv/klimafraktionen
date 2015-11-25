@@ -12,10 +12,10 @@
 
   <div class="climate-factions">
     <div class="climate-factions__button-group">
-      <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">Trasformer</button>
-      <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">Blockierer</button>
-      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">Aufsteiger</button>
-      <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">Schwache</button>
+      <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">Die Einflussreichen</button>
+      <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">Die Blockierer</button>
+      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">Die Aufsteiger</button>
+      <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">Die Schwachen</button>
       <button class="climate-factions__button" data-action-reset=>alle anzeigen</button>
     </div>
 
@@ -47,6 +47,12 @@
 
     resetButton.addEventListener('click', function() {
       chart.reset();
+
+      Array.prototype.forEach.call(focusButtons, function(button){
+        if (button.classList) {
+          button.classList.remove('climate-factions__button--inactive');
+        }
+      });
     });
 
     Array.prototype.forEach.call(focusButtons, function(button){
@@ -55,9 +61,9 @@
         chart.focusGroup(focusTarget);
         if (button.classList)
           Array.prototype.forEach.call(focusButtons, function(button){
-            button.classList.remove('climate-factions__button--active');
+            button.classList.add('climate-factions__button--inactive');
           });
-          button.classList.add('climate-factions__button--active');
+          button.classList.remove('climate-factions__button--inactive');
         });
     });
 

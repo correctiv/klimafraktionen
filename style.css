@@ -11,6 +11,8 @@
   border-radius: 3px;
   cursor: pointer;
   outline: none;
+  padding: 5px 10px;
+  box-shadow: 0 0 3px gray inset;
 }
 
 .climate-factions__button--a { background: #005fcc }
@@ -18,10 +20,10 @@
 .climate-factions__button--c { background: #009300 }
 .climate-factions__button--d { background: #ea8500 }
 
-.climate-factions__button--active.climate-factions__button--a { background: #002f66 }
-.climate-factions__button--active.climate-factions__button--b { background: #2e0000 }
-.climate-factions__button--active.climate-factions__button--c { background: #004900 }
-.climate-factions__button--active.climate-factions__button--d { background: #754200 }
+.climate-factions__button--inactive {
+  opacity: .3;
+  box-shadow: none;
+}
 
 .climate-factions__button-group {
   position: relative;
