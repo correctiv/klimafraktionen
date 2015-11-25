@@ -245,7 +245,7 @@
     function labelPositionLeft(d) {
       var xPos = x(d[options.xAccessor]);
       var center = width / 2;
-      var offset = 30;
+      var offset = 35;
       return xPos < center ? xPos + offset : xPos - offset;
     }
 
@@ -297,7 +297,7 @@
         .style('left', function(d) { return labelPositionLeft(d) + 'px'; })
         .style('top',  function(d) { return y(d[options.yAccessor]) + 'px'; })
         .style('display', 'block')
-        .html(function(d) { return d.label_html; });
+        .html(function(d) { return d.label_html || d.countryname_en; });
     }
 
     function createThresholdLine() {
