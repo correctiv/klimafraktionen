@@ -28,8 +28,16 @@
       path: 'data/climate-data.csv',
       locale: 'de',
       xAxisDivisor: 1000000000,
-      xAxisDescription: 'Bruttoinlandsprodukt (in Milliarden Euro)',
-      yAxisDescription: 'CO2-Ausstoß pro Kopf (in Tonnen)'
+      xAxisDescription: 'Bruttoinlandsprodukt (in Mrd. US-Dollar)',
+      yAxisDescription: 'CO2-Ausstoß (Tonnen pro Kopf)',
+      locale: 'de',
+      tooltipData: {
+        'co2_t_pc_2012': 'CO2-Ausstoß (in t/Kopf)',
+        'gdp_2014': 'BIP 2014 (in US-Dollar)',
+        'population_2014': 'Bevölkerung 2014',
+        'population_2050': 'Bevölkerung 2050',
+        'climate_change_performance_index': 'Platz im Klimaschutz-Index'
+      }
     });
 
     var focusButtons = document.querySelectorAll('[data-action-focus]');

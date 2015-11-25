@@ -34,24 +34,53 @@
   position: relative;
 }
 
-.climate-chart-wrapper .tooltip {
+.climate-factions__tooltip {
   display: none;
   position: absolute;
   top: 0;
   left: 0;
   width: 180px;
-  height: 100px;
   background: rgba(255, 255, 255, .8);
   border: 1px solid #ddd;
   z-index: 1000;
   padding: 10px;
+  overflow: hidden;
   pointer-events: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box;
 }
-.climate-chart-wrapper .tooltip .tool-head {
+
+.climate-factions__tooltip-head {
+  color: #dc0000;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0 0 .5em 0;
+}
+
+.climate-factions__tooltip-data {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+}
+
+.climate-factions__tooltip-data dt {
+  float: none;
+  padding: 0;
+  margin: 0;
+  font-weight: bold;
+}
+
+.climate-factions__tooltip-data dd {
+  float: none;
+  padding: 0;
+  margin: 0 0 .4em 0;
+}
+
+.climate-factions__tooltip-head {
   font-weight: bold;
 }
 

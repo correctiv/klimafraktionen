@@ -12,8 +12,18 @@
   'use strict';
 
   ///////////////////////
+  // default settings  //
+  ///////////////////////
+
+  var _locale = 'en';
+
+  ///////////////////////
   // private functions //
   ///////////////////////
+
+  function _formatNumber(value) {
+    return new Intl.NumberFormat(_locale).format(value);
+  }
 
   function _parseData(data, o) {
     data.forEach(function(d) {
@@ -50,19 +60,29 @@
 
   var Tooltip = function() {
 
-    var tooltip, top, left, ttHead, ttBody, chartWidth;
+    var tooltip, top, left, headEl, dataEl, bodyEl, chartWidth, dataItems;
 
-    function create(parent, cw) {
-      chartWidth = cw;
-      tooltip = parent.append('div').classed('tooltip', true);
-      ttHead = tooltip.append('div').classed('tool-head', true);
-      ttBody = tooltip.append('div').classed('tool-body', true);
+    function create(parent, _chartWidth, _dataItems) {
+      chartWidth = _chartWidth;
+      dataItems = _dataItems;
+      tooltip = parent.append('div').classed('climate-factions__tooltip', true);
+      headEl = tooltip.append('div').classed('climate-factions__tooltip-head', true);
+      bodyEl = tooltip.append('div').classed('climate-factions__tooltip-body', true);
+      dataEl = bodyEl.append('dl').classed('climate-factions__tooltip-data', true);
       return this;
     }
 
     function update(data) {
-      ttHead.text(data.countryname_en);
-      ttBody.text(data.co2_t_pc_2012);
+      headEl.text(data.countryname_en);
+      dataEl.selectAll('*').remove();
+      for (var key in dataItems) {
+        if (dataItems.hasOwnProperty(key)) {
+          var value = data[key];
+          var formattedValue = value ? _formatNumber(value) : '-';
+          dataEl.append('dt').text(dataItems[key]);
+          dataEl.append('dd').text(formattedValue);
+        }
+      }
     }
 
     function updatePosition(coords) {
@@ -138,7 +158,7 @@
         maxWidth: 960,
         aspectRatio: .7,
         transitionDuration: 500,
-        locale: 'en'
+        tooltipData: {}
     };
 
     var svg,
@@ -183,8 +203,6 @@
       yExtent = d3.extent(data, function(d) { return d[options.yAccessor]; });
       rExtent = d3.extent(data, function(d) { return d[options.sizeAccessor]; });
 
-      console.log(rExtent);
-
       if(options.isLogScale) {
         x = d3.scale.log().domain(xExtent).range([0, width]);
       }
@@ -201,16 +219,14 @@
         .orient('bottom')
         .scale(x)
         .ticks(4, function(d) {
-          var output = d / options.xAxisDivisor;
-          return new Intl.NumberFormat(options.locale).format(output);
+          return _formatNumber(d / options.xAxisDivisor);
         });
 
       yAxis = d3.svg.axis()
         .orient('left')
         .scale(y)
         .tickFormat(function(d) {
-          var output = d / options.yAxisDivisor;
-          return new Intl.NumberFormat(options.locale).format(output);
+          return _formatNumber(d / options.yAxisDivisor);
         });
     }
 
@@ -354,7 +370,7 @@
         .append('div')
         .classed('climate-chart-wrapper', true);
 
-      tooltip.create(parent, width);
+      tooltip.create(parent, width, options.tooltipData);
 
       svg = parent
         .append('svg')
@@ -421,10 +437,8 @@
         return d[options.yAccessor];
       });
 
-      //set new domain for x-axis
+      //set new domain for axes
       x.domain(xExtent);
-
-      //set new domain for x-axis
       y.domain(yExtent);
 
       //animate x-axis to new extent
@@ -522,6 +536,7 @@
     }
 
     _options = _merge(optionsDefault, _options);
+    _locale = _options.locale || _locale;
 
     d3.csv(_options.path, function(err, csvData) {
       if(err) {
