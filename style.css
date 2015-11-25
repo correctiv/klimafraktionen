@@ -115,12 +115,12 @@
 }
 
 .climate-chart-wrapper .label {
-  font: 11px sans-serif;
+  font: 12px sans-serif;
   line-height: 1em;
   text-shadow: 1px 1px 5px white;
   font-weight: bold;
   position: absolute;
-  padding: 0 5px;
+  padding: 0 3px;
 }
 
 .climate-chart-wrapper .label.left {
