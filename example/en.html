@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Klimafraktionen</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.de,Intl.~locale.en,Intl.~locale.fr"></script>
+  <script src="../chart.js"></script>
+</head>
+
+<body lang='en'>
+
+  <div class="climate-factions">
+    <div class="climate-factions__button-group">
+      <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">the influential</button>
+      <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">the blockaders</button>
+      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">the successful</button>
+      <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">the week</button>
+      <button class="climate-factions__button" data-action-reset=>alle anzeigen</button>
+    </div>
+
+    <div id="chart"></div>
+  </div>
+
+  <script>
+
+    var chart = new ClimateChart('#chart', {
+      path: 'data/climate-data.csv',
+      locale: 'de',
+      xAxisDivisor: 1000000000,
+      xAxisDescription: 'GDP (bn US Dollars)',
+      yAxisDescription: 'CO2 emissions (t/capita)',
+      threshold: 2.48,
+      thresholdDescription: '2.48 t/capita',
+      locale: 'en',
+      tooltipData: {
+        'co2_t_pc_2012': 'CO2 emissions (t/capita)',
+        'gdp_2014': 'GDP 2014 (US Dollars)',
+        'population_2014': 'population 2014',
+        'population_2050': 'population 2050',
+        'climate_change_performance_index': 'climate change performance index'
+      }
+    });
+
+    var focusButtons = document.querySelectorAll('[data-action-focus]');
+    var resetButton = document.querySelector('[data-action-reset]');
+
+    resetButton.addEventListener('click', function() {
+      chart.reset();
+    });
+
+    Array.prototype.forEach.call(focusButtons, function(button){
+      button.addEventListener('click', function() {
+        var focusTarget = button.getAttribute('data-action-focus');
+        chart.focusGroup(focusTarget);
+        if (button.classList)
+          Array.prototype.forEach.call(focusButtons, function(button){
+            button.classList.remove('climate-factions__button--active');
+          });
+          button.classList.add('climate-factions__button--active');
+        });
+    });
+
+  </script>
+</body>
+</html>
