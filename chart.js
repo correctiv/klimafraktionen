@@ -374,7 +374,7 @@
       svg.append('text')
         .attr('text-anchor', 'end')
         .attr('x', width)
-        .attr('y', height + 40)
+        .attr('y', height + 35)
         .text(options.xAxisDescription || options.xAccessor);
 
       svg.append('text')
