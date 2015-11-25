@@ -301,6 +301,7 @@
 
     function createThresholdLine() {
       svg.append('line')
+        .classed('threshold', true)
         .style('stroke', _colors.red)
         .style('stroke-dasharray', ('4, 4'))
         .style('stroke-width', 2)
@@ -310,6 +311,7 @@
         .attr('y2', y(options.threshold));
 
       svg.append('text')
+        .classed('threshold-description', true)
         .attr('x', 10)
         .attr('y', y(options.threshold) - 10)
         .style('fill', _colors.red)
@@ -446,6 +448,21 @@
       svg.call(createVoronoi);
     }
 
+    function updateThreshold() {
+      var yPos = y(options.threshold);
+
+      svg.selectAll('line.threshold')
+        .transition()
+        .duration(options.transitionDuration)
+        .attr('y1', yPos)
+        .attr('y2', yPos);
+
+      svg.selectAll('text.threshold-description')
+        .transition()
+        .duration(options.transitionDuration)
+        .attr('y', yPos - 10);
+    }
+
     function focusGroup(groupId) {
       //filter data
       var filteredData = data.filter(function(d) {
@@ -514,12 +531,15 @@
         .attr('cx', function(d) { return x(d[options.xAccessor]); })
         .attr('cy', function(d) { return y(d[options.yAccessor]); });
 
+      updateThreshold();
       updateChart(true);
       svg.call(createVoronoi);
     }
 
+
     function reset() {
       updateChart();
+      updateThreshold();
       xAxis.scale(x);
       yAxis.scale(y);
 
