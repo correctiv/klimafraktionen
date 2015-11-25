@@ -47,10 +47,10 @@
 
     resetButton.addEventListener('click', function() {
       chart.reset();
-
       Array.prototype.forEach.call(focusButtons, function(button){
         if (button.classList) {
           button.classList.remove('climate-factions__button--inactive');
+          button.classList.remove('climate-factions__button--active');
         }
       });
     });
@@ -59,14 +59,15 @@
       button.addEventListener('click', function() {
         var focusTarget = button.getAttribute('data-action-focus');
         chart.focusGroup(focusTarget);
-        if (button.classList)
+        if (button.classList) {
           Array.prototype.forEach.call(focusButtons, function(button){
             button.classList.add('climate-factions__button--inactive');
           });
           button.classList.remove('climate-factions__button--inactive');
-        });
+          button.classList.add('climate-factions__button--active');
+        }
+      });
     });
-
   </script>
 </body>
 </html>

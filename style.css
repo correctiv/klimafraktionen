@@ -12,17 +12,21 @@
   cursor: pointer;
   outline: none;
   padding: 5px 10px;
-  box-shadow: 0 0 3px gray inset;
+  border: 1px solid gray;
+  opacity: .8;
 }
 
-.climate-factions__button--a { background: #005fcc }
-.climate-factions__button--b { background: #5c0000 }
-.climate-factions__button--c { background: #009300 }
-.climate-factions__button--d { background: #ea8500 }
+.climate-factions__button--a { background: #005fcc; border-color: #002f66 }
+.climate-factions__button--b { background: #5c0000; border-color: #2e0000 }
+.climate-factions__button--c { background: #009300; border-color: #004900 }
+.climate-factions__button--d { background: #ea8500; border-color: #754200 }
+
+.climate-factions__button--active {
+  opacity: 1;
+}
 
 .climate-factions__button--inactive {
-  opacity: .3;
-  box-shadow: none;
+  opacity: .5;
 }
 
 .climate-factions__button-group {
