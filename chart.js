@@ -175,6 +175,7 @@
         xExtent,
         yExtent,
         rExtent,
+        yMax,
         parent,
         data,
         options,
@@ -474,13 +475,13 @@
         return d[options.xAccessor];
       });
 
-      yExtent = d3.extent(filteredData, function(d) {
+      yMax = d3.max(filteredData, function(d) {
         return d[options.yAccessor];
       });
 
       //set new domain for axes
       x.domain(xExtent);
-      y.domain(yExtent);
+      y.domain([0, yMax]);
 
       //animate x-axis to new extent
       svg.selectAll('.x.axis')
