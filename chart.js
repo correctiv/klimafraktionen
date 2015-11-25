@@ -16,6 +16,9 @@
   ///////////////////////
 
   var _locale = 'en';
+  var _colors = {
+    red: '#dc0000'
+  };
 
   ///////////////////////
   // private functions //
@@ -158,7 +161,8 @@
         maxWidth: 960,
         aspectRatio: .7,
         transitionDuration: 500,
-        tooltipData: {}
+        tooltipData: {},
+        threshold: 0
     };
 
     var svg,
@@ -294,6 +298,17 @@
         .html(function(d) { return d.label_html; });
     }
 
+    function createThresholdLine() {
+      svg.append('line')
+        .style('stroke', _colors.red)
+        .style('stroke-dasharray', ('4, 4'))
+        .style('stroke-width', 2)
+        .attr('x1', 0)
+        .attr('y1', y(options.threshold))
+        .attr('x2', width)
+        .attr('y2', y(options.threshold));
+    }
+
     function createVoronoi() {
       var voro = d3.geom.voronoi()
         .clipExtent([[0, 0], [width, height]])
@@ -387,6 +402,7 @@
       svg.call(createAxisDescription);
       svg.call(createBubbles);
       svg.call(createVoronoi);
+      svg.call(createThresholdLine);
 
       var labels = data.filter(function(d) {
         return d.labeled !== '';
