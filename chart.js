@@ -162,7 +162,8 @@
         aspectRatio: .7,
         transitionDuration: 500,
         tooltipData: {},
-        threshold: 0
+        threshold: 0,
+        thresholdDescription: ''
     };
 
     var svg,
@@ -307,6 +308,13 @@
         .attr('y1', y(options.threshold))
         .attr('x2', width)
         .attr('y2', y(options.threshold));
+
+      svg.append('text')
+        .attr('x', 10)
+        .attr('y', y(options.threshold) - 10)
+        .style('fill', _colors.red)
+        .style('font-weight', 'bold')
+        .text(options.thresholdDescription);
     }
 
     function createVoronoi() {
