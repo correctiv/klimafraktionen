@@ -412,8 +412,8 @@
       svg.call(createAxis);
       svg.call(createAxisDescription);
       svg.call(createBubbles);
-      svg.call(createVoronoi);
       svg.call(createThresholdLine);
+      svg.call(createVoronoi);
 
       var labels = data.filter(function(d) {
         return d.labeled !== '';
