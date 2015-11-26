@@ -265,6 +265,53 @@
         .attr('stroke', function(d) { return options.colors[d.fraction]; });
     }
 
+    function createLegend() {
+      var minValue = 100000000;
+      var maxValue = 1000000000;
+      var posX = width - 75;
+      var posY = r(maxValue);
+      var legend = svg.append('g')
+        .attr('transform', 'translate(' + posX + ',' + posY + ')');
+
+      legend.selectAll('circle.legend')
+        .data([maxValue, minValue])
+        .enter()
+        .append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', function(d) { return r(d); })
+        .attr('fill', 'white')
+        .attr('stroke', 'gray');
+
+      legend.append('line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 35)
+        .attr('y2', 0)
+        .attr('stroke-width', 1)
+        .attr('stroke', 'gray');
+
+      legend.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 2)
+        .attr('fill', 'gray');
+
+      legend.append('text')
+        .attr('x', -5 - r(maxValue))
+        .attr('y', 5)
+        .style('text-anchor', 'end')
+        .attr('startOffset', '100%')
+        .style('fill', 'gray')
+        .text(options.legendMaxDescription);
+
+      legend.append('text')
+        .attr('x', r(maxValue) + 12)
+        .attr('y', 5)
+        .style('fill', 'gray')
+        .text(options.legendMinDescription);
+    }
+
     function createLabels(labels) {
 
       svg.selectAll('line.line')
@@ -414,6 +461,7 @@
 
       svg.call(createAxis);
       svg.call(createAxisDescription);
+      svg.call(createLegend);
       svg.call(createBubbles);
       svg.call(createThresholdLine);
       svg.call(createVoronoi);
