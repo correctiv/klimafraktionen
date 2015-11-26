@@ -80,8 +80,8 @@
       dataEl.selectAll('*').remove();
       for (var key in dataItems) {
         if (dataItems.hasOwnProperty(key)) {
-          var value = data[key];
-          var formattedValue = value ? _formatNumber(value) : '-';
+          var value = data[key] ? data[key] : '-';
+          var formattedValue = isNaN(value) ? value : _formatNumber(value);
           dataEl.append('dt').text(dataItems[key]);
           dataEl.append('dd').text(formattedValue);
         }
