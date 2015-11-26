@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Klimafraktionen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.de,Intl.~locale.en,Intl.~locale.fr"></script>
@@ -30,6 +31,9 @@
   <script>
 
     var chart = new ClimateChart('#chart', {
+      height: window.innerHeight - 150,
+      minWidth: window.innerWidth,
+      maxWidth: false,
       path: 'data/climate-data.csv',
       locale: 'de',
       xAxisDivisor: 1000000000,

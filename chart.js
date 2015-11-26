@@ -148,18 +148,16 @@
         height: 400,
         lang: 'de',
         interactive: true,
-        showLegend: false,
         margin: {
           top: 50,
           right: 50,
           bottom: 50,
           left: 50
         },
-        filter: null,
         minRadius: 2,
         maxRadius: 30,
         maxWidth: 960,
-        aspectRatio: .7,
+        aspectRatio: 0,
         transitionDuration: 500,
         tooltipData: {},
         threshold: 0,
@@ -237,9 +235,14 @@
     }
 
     function updateDimensions(winWidth) {
-      width = winWidth < options.maxWidth ? winWidth : options.maxWidth;
+      if (options.maxWidth) {
+        width = winWidth < options.maxWidth ? winWidth : options.maxWidth;
+      }
+      else {
+        width = options.minWidth;
+      }
       width = width - margin.right - margin.left;
-      height = width * options.aspectRatio;
+      height = options.aspectRatio ? width * options.aspectRatio : options.height;
     }
 
     function labelPositionLeft(d) {
@@ -295,7 +298,7 @@
         .style('margin-top', margin.top - 5 + 'px')
         .style('margin-left', margin.left + 'px')
         .style('left', function(d) { return labelPositionLeft(d) + 'px'; })
-        .style('top',  function(d) { return y(d[options.yAccessor]) + 'px'; })
+        .style('top', function(d) { return y(d[options.yAccessor]) + 'px'; })
         .style('display', 'block')
         .html(function(d) { return d.label_html || d.countryname_en; });
     }

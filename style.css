@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .climate-factions {
   background: #fafafa;
   font-family: sans-serif;
@@ -31,8 +36,6 @@
 
 .climate-factions__button-group {
   position: relative;
-  top: 25px;
-  left: 50px;
   z-index: 1;
 }
 
