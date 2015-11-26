@@ -18,6 +18,10 @@
       <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">Die Schwachen</button>
       |
       <button class="climate-factions__button" data-action-reset=>alle anzeigen</button>
+
+      <button class="climate-factions__button" data-action-linear-scale=>lineare Skala</button>
+
+      <button class="climate-factions__button" data-action-log-scale=>log. Skala</button>
     </div>
 
     <div id="chart"></div>
@@ -46,8 +50,10 @@
 
     var focusButtons = document.querySelectorAll('[data-action-focus]');
     var resetButton = document.querySelector('[data-action-reset]');
+    var linearScaleButton = document.querySelector('[data-action-linear-scale]');
+    var logScaleButton = document.querySelector('[data-action-log-scale]');
 
-    resetButton.addEventListener('click', function() {
+    function reset() {
       chart.reset();
       Array.prototype.forEach.call(focusButtons, function(button){
         if (button.classList) {
@@ -55,6 +61,20 @@
           button.classList.remove('climate-factions__button--active');
         }
       });
+    }
+
+    logScaleButton.addEventListener('click', function() {
+      reset();
+      chart.update({isLogScale: true});
+    });
+
+    linearScaleButton.addEventListener('click', function() {
+      reset();
+      chart.update({isLogScale: false});
+    });
+
+    resetButton.addEventListener('click', function() {
+      reset();
     });
 
     Array.prototype.forEach.call(focusButtons, function(button){

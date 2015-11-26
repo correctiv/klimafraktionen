@@ -506,6 +506,7 @@
       parent.selectAll('div.label')
         .style('display', 'none')
         .filter(function(d) { return d.fraction === groupId; })
+        .classed('left', function(d) { return x(d[options.xAccessor]) > (width / 2); })
         .style('display', 'block')
         .transition()
         .duration(options.transitionDuration)
@@ -537,18 +538,10 @@
       svg.call(createVoronoi);
     }
 
-
-    function reset() {
-      updateChart();
-      updateThreshold();
-      xAxis.scale(x);
-      yAxis.scale(y);
-
-      svg.call(createAxis);
-      svg.call(createVoronoi);
-
+    function updateLabels() {
       parent.selectAll('div.label')
         .style('display', 'block')
+        .classed('left', function(d) { return x(d[options.xAccessor]) > (width / 2); })
         .transition()
         .duration(options.transitionDuration)
         .style('top', function(d) { return y(d[options.yAccessor]) + 'px'; })
@@ -569,6 +562,17 @@
         .duration(options.transitionDuration)
         .attr('cx', function(d) { return x(d[options.xAccessor]); })
         .attr('cy', function(d) { return y(d[options.yAccessor]); });
+    }
+
+    function reset() {
+      updateChart();
+      updateThreshold();
+      updateLabels();
+      xAxis.scale(x);
+      yAxis.scale(y);
+
+      svg.call(createAxis);
+      svg.call(createVoronoi);
 
       svg.selectAll('circle.bubble')
         .style('opacity', 1)
@@ -578,6 +582,10 @@
     function update(newOpts) {
       options = _merge(options, newOpts);
       updateChart();
+      updateLabels();
+      xAxis.scale(x);
+      yAxis.scale(y);
+      svg.call(createAxis);
     }
 
     _options = _merge(optionsDefault, _options);
