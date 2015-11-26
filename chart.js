@@ -90,7 +90,7 @@
 
     function updatePosition(coords) {
       top = coords[1] - 50;
-      left = coords[0] > (chartWidth / 2) ? coords[0] - 190 : coords[0] + 10;
+      left = coords[0] > (chartWidth / 2) ? coords[0] - 210 : coords[0] + 10;
 
       tooltip.style({
         top: top + 'px',
