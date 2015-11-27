@@ -3,31 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <title>Klimafraktionen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
   <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.de,Intl.~locale.en,Intl.~locale.fr"></script>
   <script src="../chart.js"></script>
 </head>
 
-<body lang='en'>
+<body>
 
   <div class="climate-factions">
-    <div class="climate-factions__button-group">
-      <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">the influential</button>
-      <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">the blockaders</button>
-      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">the successful</button>
-      <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">the weak</button>
-      <button class="climate-factions__button" data-action-reset=>show everything</button>
-    </div>
+
+  <div class="climate-factions__button-group">
+    <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">the influential</button>
+    <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">the blockaders</button>
+    <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">the successful</button>
+    <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">the weak</button>
+  </div>
 
     <div id="chart"></div>
+
+    <p class="climate-factions__extra-axis-description">
+      GDP (bn US Dollars)
+      <button class="climate-factions__button--small" data-action-linear-scale>linear Scale</button>
+      <button class="climate-factions__button--small" data-action-log-scale style="display: none">log. Scale</button>
+    </p>
   </div>
 
   <script>
 
     var chart = new ClimateChart('#chart', {
+      height: window.innerHeight - 150,
+      minWidth: window.innerWidth,
+      margin: {
+        top: 110,
+        right: 25,
+        bottom: 25,
+        left: 40
+      },
       path: 'data/climate-data.csv',
-      locale: 'de',
+      locale: 'en',
       xAxisDivisor: 1000000000,
       xAxisDescription: 'GDP (bn US Dollars)',
       yAxisDescription: 'annual CO2 emissions (t/capita)',

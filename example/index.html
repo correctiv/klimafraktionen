@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <title>Klimafraktionen</title>
@@ -9,24 +9,26 @@
   <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.de,Intl.~locale.en,Intl.~locale.fr"></script>
   <script src="../chart.js"></script>
 </head>
+
 <body>
 
   <div class="climate-factions">
+
     <div class="climate-factions__button-group">
       <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">Die Einflussreichen</button>
       <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">Die Blockierer</button>
-      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">Die Aufsteiger</button>
       <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">Die Schwachen</button>
-      |
-      <button class="climate-factions__button" data-action-reset>alle anzeigen</button>
+      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">Die Aufsteiger</button>
     </div>
 
     <div id="chart"></div>
+
     <p class="climate-factions__extra-axis-description">
       Bruttoinlandsprodukt (Mrd. US-Dollar)
-      <button class="climate-factions__button--small" data-action-linear-scale>auf linearer Skala anzeigen</button>
-      <button class="climate-factions__button--small" data-action-log-scale style="display: none">auf logarithmischer Skala anzeigen</button>
+      <button class="climate-factions__button--small" data-action-linear-scale>lineare Skala</button>
+      <button class="climate-factions__button--small" data-action-log-scale style="display: none">logarithmische Skala</button>
     </p>
+
   </div>
 
   <script>
@@ -35,7 +37,7 @@
       height: window.innerHeight - 150,
       minWidth: window.innerWidth,
       margin: {
-        top: 25,
+        top: 110,
         right: 25,
         bottom: 25,
         left: 40
@@ -89,20 +91,22 @@
       chart.update({isLogScale: false});
     });
 
-    resetButton.addEventListener('click', function() {
-      reset();
-    });
-
     Array.prototype.forEach.call(focusButtons, function(button){
       button.addEventListener('click', function() {
         var focusTarget = button.getAttribute('data-action-focus');
         chart.focusGroup(focusTarget);
         if (button.classList) {
-          Array.prototype.forEach.call(focusButtons, function(button){
-            button.classList.add('climate-factions__button--inactive');
-          });
-          button.classList.remove('climate-factions__button--inactive');
-          button.classList.add('climate-factions__button--active');
+
+          if (button.classList.contains('climate-factions__button--active')) {
+            reset();
+          }
+          else {
+            Array.prototype.forEach.call(focusButtons, function(button){
+              button.classList.add('climate-factions__button--inactive');
+            });
+            button.classList.remove('climate-factions__button--inactive');
+            button.classList.add('climate-factions__button--active');
+          }
         }
       });
     });

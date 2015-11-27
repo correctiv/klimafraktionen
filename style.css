@@ -12,18 +12,50 @@ body {
   background: #fafafa;
   font-family: sans-serif;
   font-size: 12px;
+  position: relative;
+}
+
+.climate-factions__button-group {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  z-index: 1;
+}
+
+@media (max-width: 667px) {
+  .climate-factions__button-group {
+    top: 20px;
+    width: 320px;
+  }
 }
 
 .climate-factions__button {
   color: white;
   background: gray;
   border: none;
-  border-radius: 3px;
   cursor: pointer;
   outline: none;
-  padding: 5px 10px;
-  border: 1px solid gray;
-  opacity: .8;
+  padding: 7px 7px;
+  margin: 0 5px 5px 0;
+  font-size: 13px;
+  display: block;
+  float: left;
+  width: 140px;
+  font-weight: bold;
+}
+
+.climate-factions__button--a { background: #005fcc; }
+.climate-factions__button--b { background: #5c0000; }
+.climate-factions__button--c { background: #009300; }
+.climate-factions__button--d { background: #ea8500; }
+
+.climate-factions__button--active {
+  opacity: 1;
+}
+
+.climate-factions__button--inactive {
+  background: gray;
+  opacity: .6;
 }
 
 .climate-factions__button--small {
@@ -35,26 +67,8 @@ body {
   outline: none;
   padding: 3px 5px;
   margin: 0 3px;
-  border: 1px solid gray;
   opacity: .8;
-}
-
-.climate-factions__button--a { background: #005fcc; border-color: #002f66 }
-.climate-factions__button--b { background: #5c0000; border-color: #2e0000 }
-.climate-factions__button--c { background: #009300; border-color: #004900 }
-.climate-factions__button--d { background: #ea8500; border-color: #754200 }
-
-.climate-factions__button--active {
-  opacity: 1;
-}
-
-.climate-factions__button--inactive {
-  opacity: .5;
-}
-
-.climate-factions__button-group {
-  position: relative;
-  z-index: 1;
+  border: 1px solid gray;
 }
 
 .climate-factions__extra-axis-description {
