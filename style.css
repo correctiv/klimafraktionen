@@ -1,6 +1,11 @@
 body {
   margin: 0;
   padding: 0;
+  max-width: 960px;
+}
+
+.climate-factions__wrapper {
+  position: relative;
 }
 
 .climate-factions {
@@ -17,6 +22,19 @@ body {
   cursor: pointer;
   outline: none;
   padding: 5px 10px;
+  border: 1px solid gray;
+  opacity: .8;
+}
+
+.climate-factions__button--small {
+  color: black;
+  background: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+  padding: 3px 5px;
+  margin: 0 3px;
   border: 1px solid gray;
   opacity: .8;
 }
@@ -39,8 +57,11 @@ body {
   z-index: 1;
 }
 
-.climate-chart-wrapper {
+.climate-factions__extra-axis-description {
+  text-align: right;
   position: relative;
+  right: 20px;
+  top: -18px;
 }
 
 .climate-factions__tooltip {
@@ -117,7 +138,7 @@ body {
   fill : transparent;
 }
 
-.climate-chart-wrapper .label {
+.climate-factions__wrapper .label {
   font: 12px sans-serif;
   line-height: 1em;
   text-shadow: 1px 1px 5px white;
@@ -126,7 +147,7 @@ body {
   padding: 0 3px;
 }
 
-.climate-chart-wrapper .label.left {
+.climate-factions__wrapper .label.left {
   -webkit-transform: translateX(-100%);
   -moz-transform: translateX(-100%);
   -o-transform: translateX(-100%);

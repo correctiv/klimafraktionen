@@ -272,7 +272,7 @@
     function createLegend() {
       var minValue = 100000000;
       var maxValue = 1000000000;
-      var posX = width - 75;
+      var posX = width - 80;
       var posY = r(maxValue);
       var legend = svg.append('g')
         .attr('transform', 'translate(' + posX + ',' + posY + ')');
@@ -448,7 +448,7 @@
 
       parent = parent
         .append('div')
-        .classed('climate-chart-wrapper', true);
+        .classed('climate-factions__wrapper', true);
 
       tooltip.create(parent, width, options.tooltipData);
 
