@@ -214,11 +214,11 @@
         x = d3.scale.log().domain(xExtent).range([0, width]);
       }
       else {
-        xExtent = [0, xMax * 1.03];
+        xExtent = [0, xMax * 1.05];
         x = d3.scale.linear().domain(xExtent).range([0, width]);
       }
 
-      y = d3.scale.linear().domain([0, yExtent[1]]).range([height, 0]);
+      y = d3.scale.linear().domain([-0.5, yExtent[1]]).range([height, 0]);
       r = d3.scale.sqrt().domain(rExtent).range([options.minRadius, options.maxRadius]);
     }
 
