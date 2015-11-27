@@ -6,6 +6,7 @@ body {
 
 .climate-factions__wrapper {
   position: relative;
+  padding-bottom: 50px;
 }
 
 .climate-factions {
@@ -15,18 +16,52 @@ body {
   position: relative;
 }
 
+.climate-factions__logo {
+  opacity: .4;
+  height: 25px;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+.climate-factions__correctiv-logo {
+  color: black;
+}
+
+.climate-factions__correctiv-logo:before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  top: 7px;
+  margin: 0 2px;
+  background-image: url(logo_correctiv.png);
+  background-size: 16px;
+}
+
+.climate-factions__credits {
+  position: absolute;
+  left: 20px;
+  bottom: 15px;
+}
+
+.climate-factions__credits a {
+  display: inline-block;
+  color: black;
+}
+
+.climate-factions__credits a:focus,
+.climate-factions__credits a:hover,
+.climate-factions__credits a:active {
+  color: #dc0000;
+}
+
 .climate-factions__button-group {
   position: absolute;
   top: 60px;
-  left: 20px;
+  right: 20px;
   z-index: 1;
-}
-
-@media (max-width: 667px) {
-  .climate-factions__button-group {
-    top: 20px;
-    width: 320px;
-  }
 }
 
 .climate-factions__button {
@@ -36,10 +71,10 @@ body {
   cursor: pointer;
   outline: none;
   padding: 7px 7px;
-  margin: 0 5px 5px 0;
+  margin: 0 0 5px 5px;
   font-size: 13px;
   display: block;
-  float: left;
+  float: right;
   width: 140px;
   font-weight: bold;
 }
@@ -55,7 +90,7 @@ body {
 
 .climate-factions__button--inactive {
   background: gray;
-  opacity: .6;
+  opacity: .5;
 }
 
 .climate-factions__button--small {
@@ -73,9 +108,9 @@ body {
 
 .climate-factions__extra-axis-description {
   text-align: right;
-  position: relative;
+  position: absolute;
   right: 20px;
-  top: -18px;
+  bottom: 12px;
 }
 
 .climate-factions__tooltip {
@@ -166,4 +201,23 @@ body {
   -moz-transform: translateX(-100%);
   -o-transform: translateX(-100%);
   transform: translateX(-100%);
+}
+
+@media (max-width: 667px) {
+  .climate-factions__button-group {
+    top: 20px;
+    width: 320px;
+  }
+
+  .climate-factions__logo {
+    display: none;
+  }
+
+  .climate-factions__extra-axis-description {
+    bottom: 23px;
+  }
+
+  .climate-factions__credits {
+    bottom: 3px;
+  }
 }
