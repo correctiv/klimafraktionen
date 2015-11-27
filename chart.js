@@ -203,18 +203,22 @@
     }
 
     function initScales() {
-      xExtent = d3.extent(data, function(d) { return d[options.xAccessor]; });
+      var xMin = d3.min(data, function(d) { return d[options.xAccessor]; });
+      var xMax = d3.max(data, function(d) { return d[options.xAccessor]; });
+
       yExtent = d3.extent(data, function(d) { return d[options.yAccessor]; });
       rExtent = d3.extent(data, function(d) { return d[options.sizeAccessor]; });
 
       if(options.isLogScale) {
+        xExtent = [xMin * .7, xMax / .7];
         x = d3.scale.log().domain(xExtent).range([0, width]);
       }
       else {
+        xExtent = [0, xMax * 1.03];
         x = d3.scale.linear().domain(xExtent).range([0, width]);
       }
 
-      y = d3.scale.linear().domain([-.5, yExtent[1]]).range([height, 0]);
+      y = d3.scale.linear().domain([0, yExtent[1]]).range([height, 0]);
       r = d3.scale.sqrt().domain(rExtent).range([options.minRadius, options.maxRadius]);
     }
 
