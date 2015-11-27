@@ -156,7 +156,7 @@
         },
         minRadius: 2,
         maxRadius: 30,
-        maxWidth: 960,
+        maxWidth: 1200,
         aspectRatio: 0,
         transitionDuration: 500,
         tooltipData: {},
@@ -218,7 +218,7 @@
         x = d3.scale.linear().domain(xExtent).range([0, width]);
       }
 
-      y = d3.scale.linear().domain([-0.5, yExtent[1]]).range([height, 0]);
+      y = d3.scale.linear().domain([-0.5, yExtent[1]  ]).range([height, 0]);
       r = d3.scale.sqrt().domain(rExtent).range([options.minRadius, options.maxRadius]);
     }
 
