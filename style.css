@@ -17,7 +17,7 @@ body {
 }
 
 .climate-factions__logo {
-  opacity: .4;
+  opacity: 0.3;
   height: 25px;
   position: absolute;
   top: 15px;
