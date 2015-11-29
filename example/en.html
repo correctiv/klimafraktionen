@@ -52,17 +52,32 @@
       thresholdDescription: 'Goal: 2.48 t/capita',
       locale: 'en',
       tooltipData: {
-        'co2_t_pc_2012': 'CO2 emissions (t/capita)',
-        'gdp_2014': 'GDP 2014 (US Dollars)',
-        'population_2014': 'population 2014',
-        'population_2050': 'population 2050 (projection)',
-        'important_industry_en': 'most important industy',
-        'climate_change_performance_index': 'climate change performance index'
+        'co2_t_pc_2012': {
+          title: 'CO2 emissions (t/capita)',
+          divisor: 1
+        },
+        'gdp_2014': {
+          title: 'GDP 2014 (bn US Dollars)',
+          divisor: 1000000000
+        },
+        'population_2014': {
+          title: 'population 2014',
+          divisor: 1
+        },
+        'population_2050': {
+          title: 'population 2050 (projection)',
+          divisor: 1
+        },
+        'important_industry_en': {
+          title: 'most important industies'
+        },
+        'climate_change_performance_index': {
+          title: 'climate change performance index'
+        }
       }
     });
 
     var focusButtons = document.querySelectorAll('[data-action-focus]');
-    var resetButton = document.querySelector('[data-action-reset]');
     var linearScaleButton = document.querySelector('[data-action-linear-scale]');
     var logScaleButton = document.querySelector('[data-action-log-scale]');
 

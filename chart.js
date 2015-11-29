@@ -25,7 +25,7 @@
   ///////////////////////
 
   function _formatNumber(value) {
-    return new Intl.NumberFormat(_locale).format(value);
+    return new Intl.NumberFormat(_locale, {maximumSignificantDigits: 3}).format(value);
   }
 
   function _parseData(data, o) {
@@ -63,12 +63,13 @@
 
   var Tooltip = function() {
 
-    var tooltip, top, left, headEl, dataEl, bodyEl, chartWidth, chartHeight, dataItems;
+    var tooltip, top, left, headEl, dataEl, bodyEl, chartWidth, chartHeight, headline, dataItems;
 
-    function create(parent, _chartWidth, _chartHeight, _dataItems) {
+    function create(parent, _chartWidth, _chartHeight, _headline, _dataItems) {
       chartWidth = _chartWidth;
       chartHeight = _chartHeight;
       dataItems = _dataItems;
+      headline = _headline;
       tooltip = parent.append('div').classed('climate-factions__tooltip', true);
       headEl = tooltip.append('div').classed('climate-factions__tooltip-head', true);
       bodyEl = tooltip.append('div').classed('climate-factions__tooltip-body', true);
@@ -77,13 +78,15 @@
     }
 
     function update(data) {
-      headEl.text(data.countryname_en);
+      headEl.text(data[headline]);
       dataEl.selectAll('*').remove();
       for (var key in dataItems) {
         if (dataItems.hasOwnProperty(key)) {
+          var title = dataItems[key].title;
+          var divisor = dataItems[key].divisor || 1;
           var value = data[key] ? data[key] : '-';
-          var formattedValue = isNaN(value) ? value : _formatNumber(value);
-          dataEl.append('dt').text(dataItems[key]);
+          var formattedValue = isNaN(value) ? value : _formatNumber(value / divisor);
+          dataEl.append('dt').text(title);
           dataEl.append('dd').text(formattedValue);
         }
       }
@@ -160,6 +163,7 @@
         maxWidth: 1200,
         aspectRatio: 0,
         transitionDuration: 500,
+        tooltipHeadline: '',
         tooltipData: {},
         threshold: 0,
         thresholdDescription: ''
@@ -451,7 +455,7 @@
         .append('div')
         .classed('climate-factions__wrapper', true);
 
-      tooltip.create(parent, width, height, options.tooltipData);
+      tooltip.create(parent, width, height, options.tooltipHeadline, options.tooltipData);
 
       svg = parent
         .append('svg')

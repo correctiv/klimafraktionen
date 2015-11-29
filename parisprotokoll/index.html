@@ -59,13 +59,30 @@
       threshold: 2.48,
       thresholdDescription: 'Ziel: 2,48 t/Kopf',
       locale: 'de',
+      tooltipHeadline: 'countryname_en',
       tooltipData: {
-        'co2_t_pc_2012': 'CO2-Ausstoß (t/Kopf)',
-        'gdp_2014': 'BIP 2014 (US-Dollar)',
-        'population_2014': 'Bevölkerung 2014',
-        'population_2050': 'Bevölkerung 2050 (Schätzung)',
-        'important_industry_de': 'Wichtigster Wirtschaftszweig',
-        'climate_change_performance_index': 'Platz im Klimaschutz-Index'
+        'co2_t_pc_2012': {
+          title: 'CO2-Ausstoß (t/Kopf)',
+          divisor: 1
+        },
+        'gdp_2014': {
+          title: 'BIP 2014 (in Mrd. US-Dollar)',
+          divisor: 1000000000
+        },
+        'population_2014': {
+          title: 'Bevölkerung 2014',
+          divisor: 1
+        },
+        'population_2050': {
+          title: 'Bevölkerung 2050 (Schätzung)',
+          divisor: 1
+        },
+        'important_industry_de': {
+          title: 'Wichtigster Wirtschaftszweig'
+        },
+        'climate_change_performance_index': {
+          title: 'Platz im Klimaschutz-Index'
+        }
       }
     });
 
