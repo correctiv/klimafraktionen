@@ -63,10 +63,11 @@
 
   var Tooltip = function() {
 
-    var tooltip, top, left, headEl, dataEl, bodyEl, chartWidth, dataItems;
+    var tooltip, top, left, headEl, dataEl, bodyEl, chartWidth, chartHeight, dataItems;
 
-    function create(parent, _chartWidth, _dataItems) {
+    function create(parent, _chartWidth, _chartHeight, _dataItems) {
       chartWidth = _chartWidth;
+      chartHeight = _chartHeight;
       dataItems = _dataItems;
       tooltip = parent.append('div').classed('climate-factions__tooltip', true);
       headEl = tooltip.append('div').classed('climate-factions__tooltip-head', true);
@@ -89,7 +90,7 @@
     }
 
     function updatePosition(coords) {
-      top = coords[1] - 50;
+      top = coords[1] > (chartHeight / 2) ? coords[1] - 210 : coords[1] - 10;
       left = coords[0] > (chartWidth / 2) ? coords[0] - 210 : coords[0] + 10;
 
       tooltip.style({
@@ -450,7 +451,7 @@
         .append('div')
         .classed('climate-factions__wrapper', true);
 
-      tooltip.create(parent, width, options.tooltipData);
+      tooltip.create(parent, width, height, options.tooltipData);
 
       svg = parent
         .append('svg')
