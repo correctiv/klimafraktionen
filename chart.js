@@ -223,24 +223,28 @@
         x = d3.scale.linear().domain(xExtent).range([0, width]);
       }
 
-      y = d3.scale.linear().domain([-0.5, yExtent[1]  ]).range([height, 0]);
+      y = d3.scale.linear().domain([-0.5, yExtent[1]]).range([height, 0]);
       r = d3.scale.sqrt().domain(rExtent).range([options.minRadius, options.maxRadius]);
     }
 
     function initAxis() {
       xAxis = d3.svg.axis()
         .orient('bottom')
-        .scale(x)
-        .ticks(4, function(d) {
-          return _formatNumber(d / options.xAxisDivisor);
-        });
+        .scale(x);
 
       yAxis = d3.svg.axis()
         .orient('left')
-        .scale(y)
-        .tickFormat(function(d) {
-          return _formatNumber(d / options.yAxisDivisor);
-        });
+        .scale(y);
+
+      if(options.isLogScale) {
+        // axis formatting for log. scale:
+        xAxis.ticks(4, function(d) { return _formatNumber(d / options.xAxisDivisor); });
+      }
+      else {
+        // axis formatting for linear scale:
+        xAxis.tickFormat(function(d) { return _formatNumber(d / options.xAxisDivisor); });
+        xAxis.ticks(4);
+      }
     }
 
     function updateDimensions(winWidth) {
@@ -491,6 +495,7 @@
     function updateChart(isGroupFocus) {
       if(!isGroupFocus) {
         initScales();
+        initAxis();
       }
 
       svg.selectAll('circle.bubble')
