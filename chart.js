@@ -163,7 +163,7 @@
         maxWidth: 1200,
         aspectRatio: 0,
         transitionDuration: 500,
-        tooltipHeadline: '',
+        labelField: 'countryname_en',
         tooltipData: {},
         threshold: 0,
         thresholdDescription: ''
@@ -356,7 +356,7 @@
         .style('left', function(d) { return labelPositionLeft(d) + 'px'; })
         .style('top', function(d) { return y(d[options.yAccessor]) + 'px'; })
         .style('display', 'block')
-        .html(function(d) { return d.label_html || d.countryname_en; });
+        .html(function(d) { return d.label_html || d[options.labelField]; });
     }
 
     function createThresholdLine() {
@@ -455,7 +455,7 @@
         .append('div')
         .classed('climate-factions__wrapper', true);
 
-      tooltip.create(parent, width, height, options.tooltipHeadline, options.tooltipData);
+      tooltip.create(parent, width, height, options.labelField, options.tooltipData);
 
       svg = parent
         .append('svg')
