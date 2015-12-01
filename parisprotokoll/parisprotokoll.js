@@ -1,53 +1,9 @@
 /* global ClimateChart */
 
-(function(ClimateChart) {
+var ParisprotokollChart = function(el, options) {
   'use strict';
 
-  var chart = new ClimateChart('#chart', {
-    height: window.innerHeight - 200,
-    minWidth: window.innerWidth,
-    margin: {
-      top: 110,
-      right: 25,
-      bottom: 25,
-      left: 40
-    },
-    path: '../data/climate-data.csv',
-    locale: 'de',
-    xAxisDivisor: 1000000000,
-    xAxisDescription: 'Bruttoinlandsprodukt (in Mrd. US-Dollar)',
-    yAxisDescription: 'jährlicher CO2-Ausstoß (Tonnen pro Kopf)',
-    legendMaxDescription: '1 Mrd. Menschen',
-    legendMinDescription: '100 Mio.',
-    threshold: 2.48,
-    thresholdDescription: 'Ziel: 2,48 t/Kopf',
-    labelField: 'countryname_de',
-    tooltipData: {
-      'co2_t_pc_2012': {
-        title: 'CO2-Ausstoß (t/Kopf)',
-        divisor: 1
-      },
-      'gdp_2014': {
-        title: 'BIP 2014 (in Mrd. US-Dollar)',
-        divisor: 1000000000
-      },
-      'population_2014': {
-        title: 'Bevölkerung 2014',
-        divisor: 1
-      },
-      'population_2050': {
-        title: 'Bevölkerung 2050 (Schätzung)',
-        divisor: 1
-      },
-      'important_industry_de': {
-        title: 'Wichtigster Wirtschaftszweig'
-      },
-      'climate_change_performance_index': {
-        title: 'Platz im Klimaschutz-Index'
-      }
-    }
-  });
-
+  var chart = new ClimateChart(el, options);
   var focusButtons = document.querySelectorAll('[data-action-focus]');
   var linearScaleButton = document.querySelector('[data-action-linear-scale]');
   var logScaleButton = document.querySelector('[data-action-log-scale]');
@@ -101,4 +57,4 @@
       }
     });
   });
-})(ClimateChart);
+};
