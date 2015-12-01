@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Klimafraktionen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <script src="https://cdn.polyfill.io/v1/polyfill.min.js?features=Intl.~locale.de,Intl.~locale.en,Intl.~locale.fr"></script>
+</head>
+
+<body>
+
+  <div class="climate-factions">
+
+    <img src="logo_parisprotokoll.png" class="climate-factions__logo"/>
+
+    <div class="climate-factions__button-group">
+      <button class="climate-factions__button climate-factions__button--a" data-action-focus="A">the influential</button>
+      <button class="climate-factions__button climate-factions__button--b" data-action-focus="B">the blockaders</button>
+      <button class="climate-factions__button climate-factions__button--c" data-action-focus="C">the successful</button>
+      <button class="climate-factions__button climate-factions__button--d" data-action-focus="D">the weak</button>
+    </div>
+
+    <div id="chart"></div>
+
+    <p class="climate-factions__extra-axis-description">
+      GDP (bn US Dollars)
+      <button class="climate-factions__button--small" data-action-linear-scale>linear scale</button>
+      <button class="climate-factions__button--small" data-action-log-scale style="display: none">log. scale</button>
+    </p>
+
+    <p class="climate-factions__credits">
+      Visualisierung:
+      <a class="climate-factions__correctiv-logo" href="https://correctiv.org/blog/2015/11/30/klimafraktionen/">CORRECTIV</a> |
+      <a href="https://correctiv.org/blog/2015/11/30/klimafraktionen/#credits" target="_parent">credits and sources</a>
+    </p>
+
+  </div>
+
+  <script src="../chart.js"></script>
+  <script src="./parisprotokoll.js"></script>
+
+  <script>
+    new ParisprotokollChart('#chart', {
+      height: window.innerHeight - 200,
+      minWidth: window.innerWidth,
+      margin: {
+        top: 110,
+        right: 25,
+        bottom: 25,
+        left: 40
+      },
+      path: '../data/climate-data.csv',
+      locale: 'en',
+      xAxisDivisor: 1000000000,
+      xAxisDescription: 'GDP (bn US Dollars)',
+      yAxisDescription: 'annual CO2 emissions (t/capita)',
+      legendMaxDescription: '1 bn people',
+      legendMinDescription: '100 mn',
+      threshold: 2.48,
+      thresholdDescription: 'Goal: 2.48 t/capita',
+      locale: 'en',
+      labelField: 'countryname_en',
+      tooltipData: {
+        'co2_t_pc_2012': {
+          title: 'CO2 emissions (t/capita)',
+          divisor: 1
+        },
+        'gdp_2014': {
+          title: 'GDP 2014 (bn US Dollars)',
+          divisor: 1000000000
+        },
+        'population_2014': {
+          title: 'population 2014',
+          divisor: 1
+        },
+        'population_2050': {
+          title: 'population 2050 (projection)',
+          divisor: 1
+        },
+        'important_industry_en': {
+          title: 'most important industies'
+        },
+        'climate_change_performance_index': {
+          title: 'climate change performance index'
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
